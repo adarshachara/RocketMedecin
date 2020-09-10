@@ -54,27 +54,7 @@
 
 	   </style>
 
-	   <script>
-		   /*
-		function getParameterByName(name, url) {
-		if (!url) url = window.location.href;
-		alert(url);
-		name = name.replace(/[\[\]]/g, '\\$&');
-		var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-		results = regex.exec(url);
-		if (!results) return null;
-		if (!results[2]) return '';
-		return decodeURIComponent(results[2].replace(/\+/g, ' '));
-		}
-		
-		var sn1 = getParameterByName('docid');
-		var sn2 = getParameterByName('tokenid');
-		alert(sn1+"/n "+sn2);
-
-		//document.getElementById("write").innerHTML = sn;
-		*/
-		
-		</script>
+	  
                
 		<script>
 			setTimeout(()=>{
@@ -87,8 +67,9 @@
 
 				authToken= " bearer " +localStorage.getItem("tokenid");
 				user_ID=localStorage.getItem("docid");
-				alert(authToken);
+				//alert(authToken);
 				
+				Dropzone.autoDiscover = false;
 
              /*   Logic for Get  
 			var data = {}, tmp;
@@ -150,14 +131,14 @@
 			 "headers": { "Authorization":  authToken
 				 }
 			 };
-			 alert(docIDGlobal);
+			// alert(docIDGlobal);
 			$.ajax(setting1).done(function (resp1) {
 				//sleep(10);
 				//console.log(resp1);
 				//console.log("Doctor details;"+ resp1);
 				// convert resp1 from json to key value pair
 				var data = $.parseJSON(resp1);
-			  alert(JSON.stringify(data));
+			  //alert(JSON.stringify(data));
 		        //console.log(JSON.stringify(data));
 			
 			$('#append_list').append('<p>' + user_ID+ '</p>');
@@ -192,6 +173,89 @@
 			});
 			//localStorage.setItem("doc_name", data.DoctorDtls[0].Firstname);
 			}
+
+			loadProfilepic(docIDGlobal); 
+
+			var btnUpload = $("#profilepic");
+				btnUpload.on("change", function (e) {
+
+					//alert(docIDGlobal);
+					let files = new FormData(),
+						url = 'http://localhost/rocketmed/api/UpFiles/' + docIDGlobal + '?usertype=doc&doctype=1';
+                    files.append('image', document.getElementById('profilepic').files[0]);
+					var settings = {
+						"url": url,
+						"method": "PUT",
+						"timeout": 0,
+						"processData": false,
+						"mimeType": "multipart/form-data",
+						"contentType": false,
+                        "data": files,
+						"headers": {
+							"Authorization": authToken
+						}
+
+					};
+
+					$.ajax(settings).done(function (response) {
+						console.log("uploadbtn",response);
+                        loadProfilepic(docIDGlobal); 
+
+					});
+
+				});
+			
+				function loadProfilepic(userId) {
+                var settings = {
+                    "url": "http://localhost/rocketmed/api/UpFiles?usertype=doc&userid="+userId,
+                    "method": "GET",
+					"timeout": 0,
+                    "headers": {
+                        "Authorization": authToken
+                    }
+                };
+                $.ajax(settings).done(function (response) {
+					
+					var data = $.parseJSON(response);
+				
+                    console.log(data);
+					var prof_data=[];
+					length = data.DocFileList.length
+					for(i=0;i<length;i++) {
+						if(data.DocFileList[i]["DocType"] == 1){
+							prof_data.push(data.DocFileList[i]);
+						}
+
+					}
+                    var last = prof_data[prof_data.length - 1]
+					console.log(last);
+					var PatientDocumentId = last.DoctorDocumentId;
+					console.log(PatientDocumentId);
+					var source = last.DocPath;
+					console.log(source);
+					updateProfilepic(PatientDocumentId);
+
+				}); 
+				}
+
+				function updateProfilepic(docid) {
+					console.log("updating image");
+                    var settings = {
+						"url": "http://localhost/rocketmed/api/UpFiles/" + docid + "?usertype=doc",
+                        "method": "GET",
+						"timeout": 0,
+                        "headers": {
+                            "Authorization": authToken
+                        }
+                    };
+					$.ajax(settings).done(function (response) {
+						//console.log(response);
+                        $("#profileimg").attr("src", "data: image / jpeg; base64," + response);
+                        $("#user-img").attr("src", "data: image / jpeg; base64," + response);
+                    }); 
+                }
+
+			
 			
 // 			window.Dropzone.options.myDropzone= {
 //     url: '',
@@ -221,7 +285,7 @@
 //         });
 //     }
 // }
-			}
+			load_certificate(docIDGlobal);
 			setTimeout(()=>{
 				console.log("ALL", document.querySelector('.multisteps-form__form'));
 			}, 50);
@@ -301,6 +365,7 @@
 				}
 			}
 });*/
+			}
 			</script>	
 
 	
@@ -435,7 +500,7 @@
 						<li class="nav-item dropdown has-arrow logged-item">
 							<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 								<span class="user-img">
-									<img class="rounded-circle" src="assets/img/doctors/doctor-thumb-02.jpg" width="31" alt="Darren Elder">
+									<img id="user-img" class="rounded-circle" src="data:," width="31" alt="Darren Elder">
 								</span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
@@ -489,12 +554,12 @@
 								<div class="widget-profile pro-widget-content">
 									<div class="profile-info-widget">
 										<a href="#" class="booking-doc-img">
-											<img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
+											<img id="profileimg" src="data:," alt="User Image">
 										</a>
 										<div class="upload-img">
 														<div class="change-photo-btn">
 															<span><i class="fa fa-upload"></i> Upload Photo</span>
-															<input type="file" class="upload">
+															<input type="file" class="upload" id="profilepic">
 														</div>
 														<small class="form-text text-muted">Allowed JPG or PNG. Max size of 1.5MB</small>
 													</div><br>
@@ -996,10 +1061,10 @@
 					
 										<div class="form-group" style="padding-left:15px; padding-right:15px">
 												<label>Certificate images</label>
-												<from  class="dropzone" id="dropzone-from"></from>
+												<from  class="dropzone" id="dropzone-form"></from>
 											</div>
 
-											<div class="upload-wrap" style="padding-left:15px;">
+											<div class="upload-wrap" id="certificate_img" style="padding-left:15px;">
 												<div class="upload-images">
 													<img src="assets/img/features/feature-01.jpg" alt="Upload Image">
 													<a href="javascript:void(0);" class="btn btn-icon btn-danger btn-sm"><i class="far fa-trash-alt"></i></a>
@@ -1349,63 +1414,34 @@
 		
 		<script type="text/javascript">
 		    var Data = []
-		    Dropzone.options.dropzoneFrom = {
-				autoProcessQueue: false,
+			doc_id =localStorage.getItem("docid");
+			docIDGlobal =doc_id.slice(3,doc_id.length);
+			authToken= " bearer " +localStorage.getItem("tokenid");
+
+		    Dropzone.options.dropzoneForm = {
+				autoProcessQueue: true,
+				autoDiscover:false,
 				acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
-				url: 'upload',
+				url: 'http://localhost/rocketmed/api/UpFiles/'+docIDGlobal+"?usertype=doc&doctype=2",
+				method: 'PUT',
+
+				headers:{ "Authorization": authToken},
 				init: function() {
+					var myDropzone= this;
 					var submit = document.getElementById("submit-certificates");
-					myDropzone = this;
 					submit.addEventListener("click", function(){
 						myDropzone.processQueue();
-					});
-					this.on('addedfile', function(file) {
-                     if (file.accepted !== false) {
-						 console.log(file);
-						 console.log(file["dataURL"]);
-						 console.log(this.getAcceptedFiles());
-						 console.log(this.getQueuedFiles());
-						 console.log(this.getUploadingFiles());
-						 //myDropzone.processQueue();
-                //      if (file.width < 1024 || file.height < 768) {
-                //       console.log(file);
-                //       }
-                //   else {
-				// 	 console.log(file);
-                //    }
-               }
-			  });
-			  this.on('thumbnail', function(file) {
-                     if (file.dataURL !== false) {
-						 console.log(file);
-						 console.log('file dataURL', file.dataURL);
-						 console.log('file path', file.fullPath)
-						 Data.push({name: file.name, imagebase64: file.dataURL})
-						 console.log("Data Array", Data);
-               }
-			  });
-			this.on("sending", function(file, xhr, data) {
-				//console.log('file comming', file);
-				//console.log('fileFullpath', file.fullPath);
-				var image = new Image();
-                image.src = file.dataURL;
-                document.body.appendChild(image);
-              if(file.fullPath){
-                 data.append("fullPath", file.fullPath);
-				}
-				data.append("data", Data);
-				console.log('Data', data)
-              });
-
-					this.on("complete", function() {
-						if(this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0)
-						{
-							var _this = this;
-							_this.removeAllFiles();
-						}
+						
 					})
+					myDropzone.on("complete", function(file) {
+ 						
+						   myDropzone.removeFile(file);
+						  load_certificate(docIDGlobal)
+						});
+			
 				}
-			}
+				}
+	
 		</script>
 		<script>
 			
@@ -1967,7 +2003,7 @@ function saveHospexperience(){
 				d13  = {DoctorNo:docIDGlobal,Hospname:hospital,WorkFrom:Datestart,WorkTo:Dateend,Designation:hospitaldesignation,Presentworking:"1" };
 				
 				d12 += ","+ JSON.stringify(d13) ;
-				alert(d12.toString());
+				//alert(d12.toString());
 			}
 		}
 		console.log("data3: "+d12)
@@ -2067,7 +2103,6 @@ function saveHospexperience(){
 		//saveExpDetails();
 		 saveHospexperience();
 		saveAwards();	
-		autoloadcertifcateimage();
 	}	
 
 
@@ -2075,7 +2110,7 @@ function saveHospexperience(){
 	function saveExpCertificates()
 	{
 
-		alert("Experience Certificate");
+		//alert("Experience Certificate");
 
 		var degreeID = document.getElementById("degreeID").value;
 		var collegeID = document.getElementById("collegeID").value;
@@ -2098,7 +2133,7 @@ function saveHospexperience(){
 				d2  = {DoctorNo:docIDGlobal,Degree:degreeID,CollegeName:collegeID,Completedyear:yocID,orderby:educationCounter};
 				
 				d1 += ","+ JSON.stringify(d2) ;
-				alert(d1.toString());
+				//alert(d1.toString());
 			}
 		}
 		console.log("data3: "+d1)
@@ -2128,37 +2163,76 @@ function saveHospexperience(){
 		
 	}
    
-	 function autoloadcertifcateimage() {
-		 alert("autoloadcertifcateimage");
-                   Dropzone.autoDiscover = false;
-                   $(".dropzone").dropzone({
-                       init: function () {
-                           myDropzone = this;
-                           $.ajax({
-                               url: 'https://localhost:44334/api/UpFiles/' +docIDGlobal+'?usertype=doc&doctype=2',
-                               type: 'put',
-                               dataType: 'json',
-                               success: function (response) {
+	function load_certificate(doc_id) {
+			console.log("load_certificate Image",doc_id);
+			var settings = { 
+			"url": "http://localhost/rocketmed/api/UpFiles?usertype=doc&userid="+doc_id, 
+            "method": "GET", 
+			"timeout": 0, 
+			headers: { "Authorization": authToken },
+			};	
+			$.ajax(settings).done(function (response) { 
+			console.log("load_certificate Image")
+			//console.log(response); 
+			var data = $.parseJSON(response);
+			documents = data["DocFileList"]
+			length = documents.length
+			var form = $("#certificate_img");
+			var html ="";
+			for (i = 0; i < length; i++) {
+				var value = documents[i];
+				//console.log(value);
+				if(value["DocType"] == 2) {
+					//console.log("value",value)
+					img_url = getImg_url(value["DoctorDocumentId"],"doc");
+					//console.log("img_url",img_url);
+					delet_method="deleteImg(" + value["DoctorDocumentId"] + ",'doc');"
+					html += "<div class='upload-images'> <img src= " + img_url + " alt='Upload Image'><a onclick="+delet_method +" class='btn btn-icon btn-danger btn-sm'><i class='far fa-trash-alt'></i></a></div>"
+				}
 
-                                   $.each(response, function (key, value) {
-                                       var mockFile = { name: value.name, size: value.size };
+			}
+			form.html(html);
+          }); 
 
-                                       myDropzone.emit("addedfile", mockFile);
-                                       myDropzone.emit("thumbnail", mockFile, value.path);
-                                       myDropzone.emit("complete", mockFile);
+}
 
-                                   });
+       function getImg_url(doc_id,type){
+	    console.log(doc_id,type);	   
+		var img_url;
+		var settings = { 
+			"url": "http://localhost/rocketmed/api/UpFiles/"+doc_id+"?usertype=" +type, 
+			"method": "GET", 
+			"timeout": 0,
+			"async" :false,
+			"headers": { "Authorization": authToken }, 
+		}; 
+		$.ajax(settings).done(function (response) { 
+	    img_url = response;		
+		}); 
+		return("data:image/png;base64,"+img_url);
 
-                               }
-                           });
-                       }
-                   });
-               }
+	   }
+
+	   function deleteImg(doc_id,type){
+		   //console.log("dele img");
+		   var settings = { 
+			"url": "http://localhost/rocketmed/api/UpFiles/"+doc_id+ "?usertype="+type, 
+			"method": "DELETE", 
+			"timeout": 0, 
+			"headers": { "Authorization": authToken }, 
+			}; 
+			$.ajax(settings).done(function (response) { 
+				//console.log(response); 
+				alert("Document deleted successfully")
+				load_certificate(docIDGlobal);
+
+			}); 
+	   }
 
 		function saveExpDetails()
 		{
 			
-		alert("Save Experience");
+		//alert("Save Experience");
         var awards = document.getElementById("awards_name").value;
 		var year  = document.getElementById("awards_year").value;
 
@@ -2221,7 +2295,7 @@ function saveHospexperience(){
 		function saveAwards()
 		{
 
-		alert("awards");
+		//alert("awards");
         var awards = document.getElementById("awards_name").value;
 		var year  = document.getElementById("awards_year").value;
 

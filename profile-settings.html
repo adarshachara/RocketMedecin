@@ -908,7 +908,7 @@
 				btnUpload.on("change", function (e) {
 
 					let files = new FormData(),
-						url = 'http://localhost/rocketmed/api/UpFiles/' + patient_id + '?usertype=pat&doctype=1';
+						url = 'http://RocketMedecin.com/rocketmed/api/UpFiles/' + patient_id + '?usertype=pat&doctype=1';
 					files.append('image', document.getElementById('profilepic').files[0]);
 					var settings = {
 						"url": url,
@@ -935,7 +935,7 @@
 
 			function loadProfilepic(userId) {
 				var settings = {
-					"url": "http://localhost/rocketmed/api/UpFiles?usertype=pat&userid=" + userId,
+					"url": "http://RocketMedecin.com/rocketmed/api/UpFiles?usertype=pat&userid=" + userId,
 					"method": "GET",
 					"timeout": 0,
 					"headers": {
@@ -962,7 +962,7 @@
 
 					var settings = {
 
-						"url": "http://localhost/rocketmed/api/UpFiles/" + docid + "?usertype=pat",
+						"url": "http://RocketMedecin.com/rocketmed/api/UpFiles/" + docid + "?usertype=pat",
 
 						"method": "GET",
 
