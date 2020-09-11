@@ -54,97 +54,7 @@
 
 	   </style>
 
-	  <style>
-		#map
-		{
-			height:100%;
-		}
-	</style>
-		
-		<script> 
-        window.onload=function(){
-          var map;
-	
-          function initialize() {
-              var myLatlng = new google.maps.LatLng(12.988343292929702, 77.55948770111081);
-
-              var myOptions = {
-                  zoom: 13,
-                  center: myLatlng,
-                  mapTypeId: google.maps.MapTypeId.ROADMAP
-              };
-              map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
-              var marker = new google.maps.Marker({
-                  draggable: true,
-                  position: myLatlng,
-                  map: map,
-                  title: "Your location"
-			  });
-			  
-			  const flightPlanCoordinates = [
-         		 {
-            		lat: 12.988343292929702,
-            		lng: 77.55948770111081
-          			},
-         		 {
-            		lat: 12.997668395808956,
-            		lng: 77.55322206085202
-          			},
-				];
-				
-
-	const flightPath = new google.maps.Polyline({
-          path: flightPlanCoordinates,
-          geodesic: true,
-          strokeColor: "#FF0000",
-          strokeOpacity: 1.0,
-          strokeWeight: 2
-        });
-        flightPath.setMap(map);
-
-              google.maps.event.addListener(marker, 'dragend', function (event) {
-				var point , markervalue;
-                  document.getElementById("lat").value = event.latLng.lat();
-                  document.getElementById("long").value = event.latLng.lng();
-                //   infoWindow.open(map, marker);
-			    
-			  		
-					
-
-					function save() {
-				    point = marker.getPosition();
-					//alert("Save this location" +point+"?" );
-						
-  					var txt;
- 					var r = confirm("Save Location");
-  					if (r == true) {
-	  				
-	  				markervalue=(JSON.stringify(point));
-					alert(markervalue);  
-    				// txt = "You pressed OK!";
-					localStorage.setItem('markervalue', markervalue);
-					
-
-					alert("Location Saved");
-  					} else {
-    				// txt = "You pressed Cancel!";
-					alert("Please Select New Location");
-  					}
-				//   document.getElementById("demo").innerHTML = txt;
-				}
-
-				save();
-					
-
-              });
-          }
-          google.maps.event.addDomListener(window, "load", initialize());
-        }
-
-
-    </script>  
-
+	  
                
 		<script>
 			setTimeout(()=>{
@@ -157,8 +67,9 @@
 
 				authToken= " bearer " +localStorage.getItem("tokenid");
 				user_ID=localStorage.getItem("docid");
-				alert(authToken);
+				//alert(authToken);
 				
+				Dropzone.autoDiscover = false;
 
              /*   Logic for Get  
 			var data = {}, tmp;
@@ -186,7 +97,7 @@
 			{
 			  var patient_id = user_ID.slice(3,user_ID.length);
 			  var settings2 = {
-				 "url": "http://www.rocketmedecin.com/rocketmed/api/Patient/"+patient_id,
+				 "url": "http://localhost/rocketmed/api/Patient/"+patient_id,
 				 "method": "GET",
 				 "timeout": 0,
 				};
@@ -214,21 +125,21 @@
 			 localStorage.setItem("docIDGlobal",docIDGlobal);
 
 			 var setting1 = {
-			 "url": "http://www.rocketmedecin.com/rocketmed/api/Doctor/"+DOC_id,
+			 "url": "http://localhost/rocketmed/api/Doctor/"+DOC_id,
 			 "method": "GET",
 			 "timeout": 0,
 			 "headers": { "Authorization":  authToken
 				 }
 			 };
-			 alert(docIDGlobal);
+			// alert(docIDGlobal);
 			$.ajax(setting1).done(function (resp1) {
 				//sleep(10);
 				//console.log(resp1);
 				//console.log("Doctor details;"+ resp1);
 				// convert resp1 from json to key value pair
 				var data = $.parseJSON(resp1);
-			  alert(JSON.stringify(data));
-		        console.log(JSON.stringify(data));
+			  //alert(JSON.stringify(data));
+		        //console.log(JSON.stringify(data));
 			
 			$('#append_list').append('<p>' + user_ID+ '</p>');
 					 $('#firstname1').append('<p>' + data.DoctorDtls[0].Firstname + '</p>');
@@ -237,7 +148,6 @@
 							//  $('#first_name').append('<p>' + data.DoctorDtls[0].Firstname + '</p>');
 							// $('#image').prepend('<img id="theImg" src="./images/doctor_image.jpg" alt="" class="img-fluid img-thumbnail" />');
 									 firstname =  data.DoctorDtls[0].Firstname ;
-									 localStorage.setItem("doc_name", data.DoctorDtls[0].Firstname);
 									  lastname = data.DoctorDtls[0].Lastname ;
 									  emailid = data.DoctorDtls[0].EmailId1;
 									 mobileid = data.DoctorDtls[0].Mobile1 ;
@@ -263,6 +173,89 @@
 			});
 			//localStorage.setItem("doc_name", data.DoctorDtls[0].Firstname);
 			}
+
+			loadProfilepic(docIDGlobal); 
+
+			var btnUpload = $("#profilepic");
+				btnUpload.on("change", function (e) {
+
+					//alert(docIDGlobal);
+					let files = new FormData(),
+						url = 'http://localhost/rocketmed/api/UpFiles/' + docIDGlobal + '?usertype=doc&doctype=1';
+                    files.append('image', document.getElementById('profilepic').files[0]);
+					var settings = {
+						"url": url,
+						"method": "PUT",
+						"timeout": 0,
+						"processData": false,
+						"mimeType": "multipart/form-data",
+						"contentType": false,
+                        "data": files,
+						"headers": {
+							"Authorization": authToken
+						}
+
+					};
+
+					$.ajax(settings).done(function (response) {
+						console.log("uploadbtn",response);
+                        loadProfilepic(docIDGlobal); 
+
+					});
+
+				});
+			
+				function loadProfilepic(userId) {
+                var settings = {
+                    "url": "http://localhost/rocketmed/api/UpFiles?usertype=doc&userid="+userId,
+                    "method": "GET",
+					"timeout": 0,
+                    "headers": {
+                        "Authorization": authToken
+                    }
+                };
+                $.ajax(settings).done(function (response) {
+					
+					var data = $.parseJSON(response);
+				
+                    console.log(data);
+					var prof_data=[];
+					length = data.DocFileList.length
+					for(i=0;i<length;i++) {
+						if(data.DocFileList[i]["DocType"] == 1){
+							prof_data.push(data.DocFileList[i]);
+						}
+
+					}
+                    var last = prof_data[prof_data.length - 1]
+					console.log(last);
+					var PatientDocumentId = last.DoctorDocumentId;
+					console.log(PatientDocumentId);
+					var source = last.DocPath;
+					console.log(source);
+					updateProfilepic(PatientDocumentId);
+
+				}); 
+				}
+
+				function updateProfilepic(docid) {
+					console.log("updating image");
+                    var settings = {
+						"url": "http://localhost/rocketmed/api/UpFiles/" + docid + "?usertype=doc",
+                        "method": "GET",
+						"timeout": 0,
+                        "headers": {
+                            "Authorization": authToken
+                        }
+                    };
+					$.ajax(settings).done(function (response) {
+						//console.log(response);
+                        $("#profileimg").attr("src", "data: image / jpeg; base64," + response);
+                        $("#user-img").attr("src", "data: image / jpeg; base64," + response);
+                    }); 
+                }
+
+			
 			
 // 			window.Dropzone.options.myDropzone= {
 //     url: '',
@@ -292,7 +285,7 @@
 //         });
 //     }
 // }
-			}
+			load_certificate(docIDGlobal);
 			setTimeout(()=>{
 				console.log("ALL", document.querySelector('.multisteps-form__form'));
 			}, 50);
@@ -372,11 +365,12 @@
 				}
 			}
 });*/
+			}
 			</script>	
 
 	
 	</head>
-	<body class="map-page">
+	<body>
 
 		<!-- Main Wrapper -->
 		<div class="main-wrapper">
@@ -506,7 +500,7 @@
 						<li class="nav-item dropdown has-arrow logged-item">
 							<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 								<span class="user-img">
-									<img class="rounded-circle" src="assets/img/doctors/doctor-thumb-02.jpg" width="31" alt="Darren Elder">
+									<img id="user-img" class="rounded-circle" src="data:," width="31" alt="Darren Elder">
 								</span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
@@ -560,12 +554,12 @@
 								<div class="widget-profile pro-widget-content">
 									<div class="profile-info-widget">
 										<a href="#" class="booking-doc-img">
-											<img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
+											<img id="profileimg" src="data:," alt="User Image">
 										</a>
 										<div class="upload-img">
 														<div class="change-photo-btn">
 															<span><i class="fa fa-upload"></i> Upload Photo</span>
-															<input type="file" class="upload">
+															<input type="file" class="upload" id="profilepic">
 														</div>
 														<small class="form-text text-muted">Allowed JPG or PNG. Max size of 1.5MB</small>
 													</div><br>
@@ -727,7 +721,7 @@
 					<div class="col-12 col-md-4">
 											<div class="form-group">
 												<label>Mobile number <span class="text-danger">*</span></label>
-												<input type="Number" class="form-control" class="mobile" id="mobileNumm" required>
+												<input type="text" class="form-control" class="mobile" id="mobileNumm" required>
 											</div>
 										</div>
 					
@@ -766,7 +760,7 @@
 				</div>
 				
 					<div class="button-row d-flex mt-4">
-                    <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next" onclick="saveUserInfo()">Next</button>
+                    <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next" onclick="saveUserInfo()">Next1</button>
                   </div>
               </div>
 				  </div>
@@ -792,7 +786,7 @@
                   							<div class="col-12 col-md-6">
 												<div class="form-group">
 													<label>ID proof number</label>
-													<input type="number" class="form-control" id="proofno" required placeholder="Please Enter Adhaar no">
+													<input type="text" class="form-control" id="proofno" required>
 												</div> 
 											</div>
 											</div>
@@ -875,25 +869,25 @@
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Postal Code</label>
-							<input type="number" class="form-control" id="postalcode" required placeholder="Please Enter Postal Code">
+							<input type="text" class="form-control" id="postalcode" required>
 						</div>
 					</div>
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Alternate Phone 1</label>
-							<input type="number" class="form-control" id="phone1" required placeholder="Please Enter Phoneno 1 ">
+							<input type="text" class="form-control" id="phone1" required>
 						</div>
 					</div>
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Alternate Phone 2</label>
-							<input type="number" class="form-control" id="phone2" required placeholder="Please Enter Phoneno 2 ">
+							<input type="text" class="form-control" id="phone2" required>
 						</div>
 					</div>
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Alternate Phone 3</label>
-							<input type="number" class="form-control" id="phone3" required placeholder="Please Enter Phoneno 3">
+							<input type="text" class="form-control" id="phone3" required>
 						</div>
 					</div>
 				</div>
@@ -917,12 +911,12 @@
 		</div>
 		<div class="button-row d-flex mt-4">
             <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-            <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next" onclick="saveContactInfo()">Next</button>
+            <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next" onclick="saveContactInfo()">Next2</button>
         </div>
 			  </div>
 			  </div>
 		<!-- End of section 1-->		
-		<!-- Beginning of Section 2: Clinic Info 23080202-->
+		<!-- Beginning of Section 2: Clinic Info -->
 		      <!--Add errorResolve1 class as shown below-->
               <div class="multisteps-form__panel rounded bg-white errorResolve3" data-animation="scaleIn">
                 <h3 class="multisteps-form__title" style="padding:15px;">Clinic info</h3><br>
@@ -936,11 +930,11 @@
 							<h5 class="card-title">Are you associated with any?</h5><br>
 								<div id="pricing_select">
 										<div class="custom-control custom-checkbox custom-control-inline">
-											<input type="checkbox" class="custom-control-input clinic_checkbox" checked id="clinicid" name="clinicinfodisplay">
+											<input type="checkbox" class="custom-control-input" checked id="clinicid">
 											<label class="custom-control-label" for="clinicid">Clinic</label>
 										</div>
 										<div class="custom-control custom-checkbox custom-control-inline">
-											<input type="checkbox" class="custom-control-input hospital_checkbox" id="hospitalid" name="hospinfodisplay">
+											<input type="checkbox" class="custom-control-input" id="hospitalid">
 											<label class="custom-control-label" for="hospitalid">Hospital</label>
 										</div><br><br>
 											
@@ -948,7 +942,6 @@
 						
 					</div>
 					<br><br>
-					   <div class="row"  id="clinic_info_display" > <!---Start-->
 							<div class="col-md-6">
 								<div class="form-group">
 									<label>Clinic Name</label>
@@ -965,26 +958,26 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 1</label>
-									<input type="Number" class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
+									<input type="text" class="form-control" id="ClincPhone1">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 2</label>
-									<input type="Number" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
+									<input type="text" class="form-control" id="ClincPhone2">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 3</label>
-									<input type="Number" class="form-control" id="ClincPhone3" placeholder="Please Enter Phone no">
+									<input type="text" class="form-control" id="ClincPhone3">
 								</div>
 							</div>
 							
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Add amount</label>
-									<input type="Number" class="form-control" id="ClincAmount" placeholder="Please Enter Amount"> 
+									<input type="text" class="form-control" id="ClincAmount">
 								</div>
 								<div class="add-more">
 									<a href="javascript:void(0);" class="add-clinic"><i class="fa fa-plus-circle"></i> Add More</a>
@@ -993,76 +986,13 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">GST</label>
-									<input type="Number" class="form-control" id="ClincGST" placeholder="Please Enter GST no">
-								</div>
-							</div>
-						   
-						   <div class="col-12 col-md-4">
-							   
-								<div class="form-group add-more">
-									<br><br>
-									<div class="add-more">
-										<a class="edit-link" data-toggle="modal" href="#edit_time_slot"><i class="fa fa-plus-circle"></i>Pin your location</a>
-									</div>
-									
+									<input type="text" class="form-control" id="ClincGST">
 								</div>
 							</div>
 							
-						</div><!----End-->
-
-						<div class="row"  id="hospital_info_display" style="display:none"> <!---Start-->
-							<div class="col-md-6">
-								<div class="form-group">
-									<label>Hospital Name</label>
-									<input type="text" class="form-control" id="ClincName">
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="form-group">
-									<label>Hospital  Address</label>
-									<input type="text" class="form-control" id="ClincAdd">
-								</div>
-							</div>
-							<br>
-							<div class="col-12 col-md-4">
-								<div class="form-group">
-									<label class="control-label">Alternate Phone 1</label>
-									<input type="number" class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
-								</div>
-							</div>
-							<div class="col-12 col-md-4">
-								<div class="form-group">
-									<label class="control-label">Alternate Phone 2</label>
-									<input type="number" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
-								</div>
-							</div>
-							<div class="col-12 col-md-4">
-								<div class="form-group">
-									<label class="control-label">Alternate Phone 3</label>
-									<input type="number" class="form-control" id="ClincPhone3"  placeholder="Please Enter Phone no">
-								</div>
-							</div>
 							
-							<div class="col-12 col-md-4">
-								<div class="form-group">
-									<label class="control-label">Add amount</label>
-									<input type="number" class="form-control" id="ClincAmount"  placeholder="Please Enter Amount">
-								</div>
-								<div class="add-more">
-									<a href="javascript:void(0);" class="add-clinic"><i class="fa fa-plus-circle"></i> Add More</a>
-								</div>
-							</div>
-							<div class="col-12 col-md-4">
-								<div class="form-group">
-									<label class="control-label">GST</label>
-									<input type="number" class="form-control" id="ClincGST"  placeholder="Please Enter GST">
-								</div>
-							</div>
-							
-						</div><!----End-->
-
-					</div>
-					
+						</div>
+						
 						
 									
 								
@@ -1085,7 +1015,7 @@
 						
 				  	<div class="button-row d-flex mt-4">
                     <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                    <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next" onclick="saveClinicHospital()">Next</button>
+                    <button class="btn btn-primary ml-auto js-btn-next" type="button" title="Next" onclick="saveClinicHospital()">Next3</button>
                   </div>
 					
 				</div>
@@ -1118,7 +1048,7 @@
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>Year of Completion</label>
-															<input type="number" class="form-control" id="yocID" placeholder="Please Enter Year"/>
+															<input type="text" class="form-control" id="yocID"/>
 														</div> 
 													</div>
 												
@@ -1131,10 +1061,10 @@
 					
 										<div class="form-group" style="padding-left:15px; padding-right:15px">
 												<label>Certificate images</label>
-												<from  class="dropzone" id="dropzone-from"></from>
+												<from  class="dropzone" id="dropzone-form"></from>
 											</div>
 
-											<div class="upload-wrap" style="padding-left:15px;">
+											<div class="upload-wrap" id="certificate_img" style="padding-left:15px;">
 												<div class="upload-images">
 													<img src="assets/img/features/feature-01.jpg" alt="Upload Image">
 													<a href="javascript:void(0);" class="btn btn-icon btn-danger btn-sm"><i class="far fa-trash-alt"></i></a>
@@ -1159,13 +1089,13 @@
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>Start year</label>
-															<input type="number" class="form-control" placeholder="yyyy" id="start_date" placeholder="Please Enter Year">
+															<input type="text" class="form-control" placeholder="yyyy" id="start_date" >
 														</div> 
 													</div>
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>End year / till date</label>
-															<input type="number" class="form-control" placeholder="yyyy" id="end_date" placeholder="Please Enter Year">
+															<input type="text" class="form-control" placeholder="yyyy" id="end_date">
 														</div> 
 													</div>
 													<div class="col-12 col-md-6 col-lg-4">
@@ -1200,7 +1130,7 @@
 											<div class="col-12 col-md-5">
 												<div class="form-group">
 													<label>Year</label>
-													<input type="number" class="form-control" id="awards_year"  placeholder="Please Enter year">
+													<input type="text" class="form-control" id="awards_year">
 												</div> 
 											</div>
 										</div>
@@ -1210,7 +1140,7 @@
 									</div>
 					<div class="button-row d-flex mt-4">
                     <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
-                     <button id="submit-certificates" class="btn btn-primary ml-auto js-btn-next" type="button" title="Next" onclick="saveEducationInfo()">Next</button>
+                     <button id="submit-certificates" class="btn btn-primary ml-auto js-btn-next" type="button" title="Next" onclick="saveEducationInfo()">Next4</button>
                   </div>
                 </div>
               </div>
@@ -1247,7 +1177,7 @@
 											<div class="col-12 col-md-5">
 												<div class="form-group">
 													<label>Year</label>
-													<input type="number" class="form-control" id="registeration_year"  placeholder="Please Enter year">
+													<input type="text" class="form-control" id="registeration_year">
 												</div> 
 											</div>
 										</div>
@@ -1449,42 +1379,7 @@
 		   
 		</div>
 		<!-- /Main Wrapper -->
-		
-		<div class="modal fade custom-modal" id="edit_time_slot">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Pin your location</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						
-						
-				    <div style="display:flex;flex-direction:row;justify-content: space-evenly;margin-top:10%;margin-bottom:5%;">
-					   Latitude: <input id="lat" name="lat" val="40.713956" style="width:20%;"/> 
-				Longitude: <input id="long" name="long" val="74.006653"   style="width:20%;"/> 
-					</div>
-                <div id="map_canvas" style="height:60%;"></div>
-                
-	                <!-- map-->
-	          		<br><br>
-						<form>
-							<div class="submit-section text-center">
-								<button type="submit" class="btn btn-primary submit-btn">Save</button>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
 	  
-		
-		
-		
-		
-		
 		<!-- jQuery -->
 		<script src="assets/js/jquery.min.js"></script>
 		
@@ -1517,113 +1412,36 @@
 		<script src="assets/js/script.js"></script>
 		<script src="assets/js/wizard.js"></script>
 		
-		<!-- Custom JS -->
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD6adZVdzTvBpE2yBRK8cDfsss8QXChK0I"></script>
-		<script src="assets/js/map.js"></script>
-		
-		
 		<script type="text/javascript">
-		
-		/* Convert this to a function onclick fucntion**/
-		
-		/*var user_ID;
-		
-		if (localStorage.getItem("docid"))
-		{ 
-		user_ID=localStorage.getItem("docid");
-		}
-		if (localStorage.getItem("hosid"))
-		{ 
-		user_ID=localStorage.getItem("hosid");
-		}
-		if (localStorage.getItem("patid"))
-		{ 
-		user_ID=localStorage.getItem("patid");
-		}
-		
-		alert(user_ID);
-		
-		var loginid = user_ID.slice(3,user_ID.length);
 		    var Data = []
-			
-		    Dropzone.options.dropzoneFrom = {
-				autoProcessQueue: false,
+			doc_id =localStorage.getItem("docid");
+			docIDGlobal =doc_id.slice(3,doc_id.length);
+			authToken= " bearer " +localStorage.getItem("tokenid");
+
+		    Dropzone.options.dropzoneForm = {
+				autoProcessQueue: true,
+				autoDiscover:false,
 				acceptedFiles:".png,.jpg,.gif,.bmp,.jpeg",
-				url: 'upload',
+				url: 'http://localhost/rocketmed/api/UpFiles/'+docIDGlobal+"?usertype=doc&doctype=2",
+				method: 'PUT',
+
+				headers:{ "Authorization": authToken},
 				init: function() {
-					myDropzone = this;
-                    $.ajax({
-                        url: 'http://www.rocketmedecin.com/api/UpFiles/' +loginid+ '?usertype=doc&doctype=2',
-                        type: 'put',
-                        dataType: 'json',
-                        "headers": {
-                            "Authorization": authToken,
-							"Access-Control-Allow-Origin":"*",
-							"Access-Control-Request-Headers": "x-requested-with"
-                        },
-                        success: function (response) {
-
-                            $.each(response, function (key, value) {
-                                var mockFile = { name: value.name, size: value.size };
-
-                                myDropzone.emit("addedfile", mockFile);
-                                myDropzone.emit("thumbnail", mockFile, value.path);
-                                myDropzone.emit("complete", mockFile);
-
-                            });
-
-                        }
-                    });
-					//submit.addEventListener("click", function(){
-						//myDropzone.processQueue();
-					//});
-					this.on('addedfile', function(file) {
-                     if (file.accepted !== false) {
-						 console.log(file);
-						 console.log(file["dataURL"]);
-						 console.log(this.getAcceptedFiles());
-						 console.log(this.getQueuedFiles());
-						 console.log(this.getUploadingFiles());
-						 //myDropzone.processQueue();
-                //      if (file.width < 1024 || file.height < 768) {
-                //       console.log(file);
-                //       }
-                //   else {
-				// 	 console.log(file);
-                //    }
-               }
-			  });
-			  this.on('thumbnail', function(file) {
-                     if (file.dataURL !== false) {
-						 console.log(file);
-						 console.log('file dataURL', file.dataURL);
-						 console.log('file path', file.fullPath)
-						 Data.push({name: file.name, imagebase64: file.dataURL})
-						 console.log("Data Array", Data);
-               }
-			  });
-			this.on("sending", function(file, xhr, data) {
-				//console.log('file comming', file);
-				//console.log('fileFullpath', file.fullPath);
-				var image = new Image();
-                image.src = file.dataURL;
-                document.body.appendChild(image);
-              if(file.fullPath){
-                 data.append("fullPath", file.fullPath);
-				}
-				data.append("data", Data);
-				console.log('Data', data)
-              });
-
-					this.on("complete", function() {
-						if(this.getQueuedFiles().length == 0 && this.getUploadingFiles().length == 0)
-						{
-							var _this = this;
-							_this.removeAllFiles();
-						}
+					var myDropzone= this;
+					var submit = document.getElementById("submit-certificates");
+					submit.addEventListener("click", function(){
+						myDropzone.processQueue();
+						
 					})
+					myDropzone.on("complete", function(file) {
+ 						
+						   myDropzone.removeFile(file);
+						  load_certificate(docIDGlobal)
+						});
+			
 				}
-			}*/
+				}
+	
 		</script>
 		<script>
 			
@@ -1669,7 +1487,7 @@
 					};
 					console.log("Basic Info Data :"+JSON.stringify(userInfoData));
 			$.ajax({
-				url: "http://www.rocketmedecin.com/rocketmed/api/Doctor/"+docIDGlobal+"?page=1",
+				url: "http://localhost/rocketmed/api/Doctor/"+docIDGlobal+"?page=1",
 				method:"PUT",
 				async: false,
 				contentType: 'application/json; charset=utf-8',
@@ -1711,7 +1529,7 @@
 
 				console.log("Basic Info Data :"+JSON.stringify(clinicHospdata));
 			$.ajax({
-				url: "http://www.rocketmedecin.com/rocketmed/api/Doctor/"+docIDGlobal+"?page=3",
+				url: "http://localhost/rocketmed/api/Doctor/"+docIDGlobal+"?page=3",
 				method:"PUT",
 				async: false,
 				contentType: 'application/json; charset=utf-8',
@@ -1752,7 +1570,7 @@
 				/*
 				First Three data
 				var settings = {
- "url": "https://www.rocketmedecin.com:44334/api/DocEdu",
+ "url": "http://www.rocketmedecin.com/rocketmed//api/DocEdu",
  "method": "POST",
  "timeout": 0,
  "headers": {
@@ -1800,7 +1618,7 @@ urture/image/certificate1.jpg");
 form.append("", fileInput.files[0], "/C:/Users/ambkum01/Desktop/MediaN
 urture/image/certificate2.jpg");
 var settings = {
- "url": "https://www.rocketmedecin.com:44334/api/UpFiles/5?usertype=doc&doctype=2
+ "url": "http://www.rocketmedecin.com/rocketmed//api/UpFiles/5?usertype=doc&doctype=2
 ",
  "method": "PUT",
  "timeout": 0,
@@ -1859,7 +1677,7 @@ $.ajax(settings).done(function (response) {
 			// alert(JSON.stringify(data1));
 				console.log("Basic Info Data :"+JSON.stringify(data1));
 			$.ajax({
-				url: "http://www.rocketmedecin.com/rocketmed/api/Doctor/"+docIDGlobal+"?page=2",
+				url: "http://localhost/rocketmed/api/Doctor/"+docIDGlobal+"?page=2",
 				method:"PUT",
 				async: false,
 				contentType: 'application/json; charset=utf-8',
@@ -1914,7 +1732,6 @@ $.ajax(settings).done(function (response) {
 			//Save Clinic Info
 			function saveClinicInfo()
 			{
-			var Docno;
 			console.log('call happening 1')
 			// var clinicNme = document.getElementById("clinicName").value;
 			// var clinicNme = clinicNme.options[clinicNme.selectedIndex].value;
@@ -1931,6 +1748,7 @@ $.ajax(settings).done(function (response) {
 
 
 
+			//Hardcoded, should move to profile-settings.js file and implement with counter	
 				var data2 = {
 					
 					
@@ -1944,8 +1762,8 @@ $.ajax(settings).done(function (response) {
 					"Amount":"1000",
 					"GST":"180",
 					"OrderBy":"3"}),*/
-					DoctorNo:docIDGlobal,
-					//ClinicId: $('#ClincName').val(),
+
+					ClinicId: $('#ClincName').val(),
 					ClinicName: $('#ClincName').val(),
 					ClinicAddress: $('#ClincAdd ').val(),
 					AlternatePhone1: $('#ClincPhone1 ').val(),
@@ -1953,7 +1771,7 @@ $.ajax(settings).done(function (response) {
 					AlternatePhone3: $('#ClincPhone3 ').val(),
 					Amount:$('#ClincAmount').val(),
 				    GST: $('#ClincGST').val(),
-					OrderBy:"1" //Look Into UI Add more to update
+					OrderBy:"3" //Look Into UI Add more to update
 					
 
 					/*ClinicId:"9",
@@ -1971,57 +1789,29 @@ $.ajax(settings).done(function (response) {
 				
 				console.log("Clinic Info Json:"+JSON.stringify(data2));
 				
-				var formatdata =(JSON.stringify(data2));
-				console.log(docIDGlobal+"check doctor global id");
-				/*console.log(formatdata);
 				/*
 				"data": JSON.stringify({"ClinicId":"9","ClinicName":"Arogya Clinic T",
 				"ClinicAddress":"Vijaya Bank Layout T, 560067","AlternatePhone1":"911111111",
 				"AlternatePhone2":"8222222222","AlternatePhone3":"7333333333","Amount":"1000","GST":"180","OrderBy":"3"})};
 			*/
 			$.ajax({
-				url: "http://www.rocketmedecin.com/rocketmed/api/ClinicInfo/"+docIDGlobal,
-				method:"POST",
+				url: "http://localhost/rocketmed/api/ClinicInfo/"+docIDGlobal,
+				method:"PUT",
 				async: false,
 				contentType: 'application/json; charset=utf-8',
-				data:"["+formatdata+"]",
+				data:JSON.stringify(data2),
 				timeout: 36000, 
 				headers: { "Authorization": authToken },
 				error: function(xhr, status, error) {
   					var err = eval("(" + xhr.responseText + ")");
   					console.log("Error Message"+err.Message);	
 					console.log('ajax call happening 1')	
-				 alert("Error saving Clinic Info. Pease Try Again");
+					alert("Error saving Clinic Info. Pease Try Again");
 					
 				},
-				success: function(response1){ 
+				success: function(response1){
 						console.log(response1);
-						
 						console.log("Clinic Info Updated : "+response1);
-						alert('Clinic/Hospital Info Updated Successfully !!');
-						}
-			});
-
-
-			$.ajax({
-				url: "http://www.rocketmedecin.com/rocketmed/api/ClinicInfo/"+docIDGlobal,
-				method:"GET",
-				async: false,
-				contentType: 'application/json; charset=utf-8',
-				data:"["+formatdata+"]",
-				timeout: 36000, 
-				headers: { "Authorization": authToken },
-				error: function(xhr, status, error) {
-  					var err = eval("(" + xhr.responseText + ")");
-  					console.log("Error Message"+err.Message);	
-					console.log('ajax call happening 1')	
-				 alert("Error saving Clinic Info. Pease Try Again");
-					
-				},
-				success: function(response1){ 
-						console.log(response1);
-						
-						console.log("Clinic Info Updated : "+response1.ClinicId);
 						alert('Clinic/Hospital Info Updated Successfully !!');
 						}
 			});
@@ -2054,7 +1844,7 @@ $.ajax(settings).done(function (response) {
 				}
 				console.log("["+specData+"]");
 				$.ajax({
-					url: "http://www.rocketmedecin.com/rocketmed/api/DocSpec/" +docIDGlobal,
+					url: "http://localhost/rocketmed/api/DocSpec",
 					method:"POST",
 					async: false,
 					contentType: 'application/json; charset=utf-8',
@@ -2070,12 +1860,15 @@ $.ajax(settings).done(function (response) {
 					success: function(response1){
 							console.log(response1);
 							console.log("Clinic Specializations Info Updated !! ");
-							alert('Clinic Specialization Info Updated Successfully!!');
+							alert('Clinic Specialization Info Updated Successfully !!');
 							}
 				});
 		}
 		
-		
+		function test()
+		{
+			alert(1);
+		}
 		//Save CLinic Services
 		function saveServices()
 		{	let specData={"DoctorNo":"4","ServiceName":"Dummy Service","OrderBy":"44"};
@@ -2103,7 +1896,7 @@ $.ajax(settings).done(function (response) {
 				}
 				console.log("["+specData+"]");
 				$.ajax({
-					url: "http://www.rocketmedecin.com/rocketmed/api/DocSer/" +docIDGlobal,
+					url: "http://localhost/rocketmed/api/DocSer",
 					method:"POST",
 					async: false,
 					contentType: 'application/json; charset=utf-8',
@@ -2210,7 +2003,7 @@ function saveHospexperience(){
 				d13  = {DoctorNo:docIDGlobal,Hospname:hospital,WorkFrom:Datestart,WorkTo:Dateend,Designation:hospitaldesignation,Presentworking:"1" };
 				
 				d12 += ","+ JSON.stringify(d13) ;
-				alert(d12.toString());
+				//alert(d12.toString());
 			}
 		}
 		console.log("data3: "+d12)
@@ -2219,7 +2012,7 @@ function saveHospexperience(){
 		
 			$.ajax({
 				    
-					url:"http://www.rocketmedecin.com/rocketmed/api/DocExp/"+docIDGlobal, 
+					url:"http://localhost/rocketmed/api/DocExp", 
 					method:"POST",
 					async: false,
 					contentType: 'application/json; charset=utf-8',
@@ -2286,7 +2079,7 @@ function saveHospexperience(){
 		//alert(JSON.stringify(data3));
 		
 			$.ajax({
-					url: "http://www.rocketmedecin.com/rocketmed/api/DocEdu/"+docIDGlobal,
+					url: "http://localhost/rocketmed/api/DocEdu/",
 					method:"POST",
 					async: false,
 					contentType: 'application/json; charset=utf-8',
@@ -2310,7 +2103,6 @@ function saveHospexperience(){
 		//saveExpDetails();
 		 saveHospexperience();
 		saveAwards();	
-		autoloadcertifcateimage();
 	}	
 
 
@@ -2318,7 +2110,7 @@ function saveHospexperience(){
 	function saveExpCertificates()
 	{
 
-		alert("Experience Certificate");
+		//alert("Experience Certificate");
 
 		var degreeID = document.getElementById("degreeID").value;
 		var collegeID = document.getElementById("collegeID").value;
@@ -2341,7 +2133,7 @@ function saveHospexperience(){
 				d2  = {DoctorNo:docIDGlobal,Degree:degreeID,CollegeName:collegeID,Completedyear:yocID,orderby:educationCounter};
 				
 				d1 += ","+ JSON.stringify(d2) ;
-				alert(d1.toString());
+				//alert(d1.toString());
 			}
 		}
 		console.log("data3: "+d1)
@@ -2349,7 +2141,7 @@ function saveHospexperience(){
 		//alert(JSON.stringify(data3));
 		
 			$.ajax({
-					url: "http://www.rocketmedecin.com/rocketmed/api/DocEdu/"+docIDGlobal,
+					url: "http://localhost/rocketmed/api/DocEdu/",
 					method:"POST",
 					async: false,
 					contentType: 'application/json; charset=utf-8',
@@ -2371,40 +2163,76 @@ function saveHospexperience(){
 		
 	}
    
-	 function autoloadcertifcateimage() {
-		 alert("autoloadcertifcateimage");
-                   Dropzone.autoDiscover = false;
-                   $(".dropzone").dropzone({
-                       init: function () {
-                           myDropzone = this;
-                           $.ajax({
-                               url: 'http://www.rocketmedecin.com/rokcetmed/api/UpFiles/' +docIDGlobal+'?usertype=doc&doctype=2',
-                               type: 'put',
-							   dataType: 'json',
-                               "headers": {
-                                   "Authorization": authToken
-                               },
-                               success: function (response) {
+	function load_certificate(doc_id) {
+			console.log("load_certificate Image",doc_id);
+			var settings = { 
+			"url": "http://localhost/rocketmed/api/UpFiles?usertype=doc&userid="+doc_id, 
+            "method": "GET", 
+			"timeout": 0, 
+			headers: { "Authorization": authToken },
+			};	
+			$.ajax(settings).done(function (response) { 
+			console.log("load_certificate Image")
+			//console.log(response); 
+			var data = $.parseJSON(response);
+			documents = data["DocFileList"]
+			length = documents.length
+			var form = $("#certificate_img");
+			var html ="";
+			for (i = 0; i < length; i++) {
+				var value = documents[i];
+				//console.log(value);
+				if(value["DocType"] == 2) {
+					//console.log("value",value)
+					img_url = getImg_url(value["DoctorDocumentId"],"doc");
+					//console.log("img_url",img_url);
+					delet_method="deleteImg(" + value["DoctorDocumentId"] + ",'doc');"
+					html += "<div class='upload-images'> <img src= " + img_url + " alt='Upload Image'><a onclick="+delet_method +" class='btn btn-icon btn-danger btn-sm'><i class='far fa-trash-alt'></i></a></div>"
+				}
 
-                                   $.each(response, function (key, value) {
-                                       var mockFile = { name: value.name, size: value.size };
+			}
+			form.html(html);
+          }); 
 
-                                       myDropzone.emit("addedfile", mockFile);
-                                       myDropzone.emit("thumbnail", mockFile, value.path);
-                                       myDropzone.emit("complete", mockFile);
+}
 
-                                   });
+       function getImg_url(doc_id,type){
+	    console.log(doc_id,type);	   
+		var img_url;
+		var settings = { 
+			"url": "http://localhost/rocketmed/api/UpFiles/"+doc_id+"?usertype=" +type, 
+			"method": "GET", 
+			"timeout": 0,
+			"async" :false,
+			"headers": { "Authorization": authToken }, 
+		}; 
+		$.ajax(settings).done(function (response) { 
+	    img_url = response;		
+		}); 
+		return("data:image/png;base64,"+img_url);
 
-                               }
-                           });
-                       }
-                   });
-               }
+	   }
+
+	   function deleteImg(doc_id,type){
+		   //console.log("dele img");
+		   var settings = { 
+			"url": "http://localhost/rocketmed/api/UpFiles/"+doc_id+ "?usertype="+type, 
+			"method": "DELETE", 
+			"timeout": 0, 
+			"headers": { "Authorization": authToken }, 
+			}; 
+			$.ajax(settings).done(function (response) { 
+				//console.log(response); 
+				alert("Document deleted successfully")
+				load_certificate(docIDGlobal);
+
+			}); 
+	   }
 
 		function saveExpDetails()
 		{
 			
-		alert("Save Experience");
+		//alert("Save Experience");
         var awards = document.getElementById("awards_name").value;
 		var year  = document.getElementById("awards_year").value;
 
@@ -2436,7 +2264,7 @@ function saveHospexperience(){
 		//alert(JSON.stringify(data3));
 		
 			$.ajax({
-					url: "http://www.rocketmedecin.com/rocketmed/api/DocAward/"+docIDGlobal,
+					url: "http://localhost/rocketmed/api/DocAward/",
 					method:"POST",
 					async: false,
 					contentType: 'application/json; charset=utf-8',
@@ -2467,7 +2295,7 @@ function saveHospexperience(){
 		function saveAwards()
 		{
 
-		alert("awards");
+		//alert("awards");
         var awards = document.getElementById("awards_name").value;
 		var year  = document.getElementById("awards_year").value;
 
@@ -2499,7 +2327,7 @@ function saveHospexperience(){
 		//alert(JSON.stringify(data3));
 		
 			$.ajax({
-					url: "http://www.rocketmedecin.com/rocketmed/api/DocAward/"+docIDGlobal,
+					url: "http://localhost/rocketmed/api/DocAward/",
 					method:"POST",
 					async: false,
 					contentType: 'application/json; charset=utf-8',
@@ -2568,7 +2396,7 @@ function saveMembership()
 		//alert(JSON.stringify(data3));
 		
 			$.ajax({
-					url: "http://www.rocketmedecin.com/rocketmed/api/DocMem/"+docIDGlobal,
+					url: "http://localhost/rocketmed/api/DocMem/",
 					method:"POST",
 					async: false,
 					contentType: 'application/json; charset=utf-8',
@@ -2634,7 +2462,7 @@ function savePracticeReg()
 		//alert(JSON.stringify(data3));
 		
 			$.ajax({
-					url: "http://www.rocketmedecin.com/rocketmed/api/DocRegDet/"+docIDGlobal,
+					url: "http://localhost/rocketmed/api/DocRegDet/",
 					method:"POST",
 					async: false,
 					contentType: 'application/json; charset=utf-8',
@@ -2651,19 +2479,19 @@ function savePracticeReg()
 							console.log(response1);
 							console.log("Registeration Info Updated : ");
 							alert('Registeration  Info Updated Successfully !!');
-							// submit_redirect();
+							submit_redirect();
 							}
 				});
 	}
 
 
 
-// function submit_redirect()
-// {          
-// 	        alert("Going to doctor dashboard");
-// 	        var doc_url = 'doctor-dashboard.html';
-// 			 window.open(doc_url, "_blank" );
-// }
+function submit_redirect()
+{          
+	        alert("Going to doctor dashboard");
+	        var doc_url = 'doctor-dashboard.html';
+			 window.open(doc_url, "_blank" );
+}
 
 function savePracticeDocuments()
 	{
@@ -2877,37 +2705,6 @@ function savePracticeDocuments()
 
 
 		   </script>
-
-<script type="text/javascript">/*****Jquery for Toggle Checkbox Clinic and Hospital****/
- /**Clinic***/
-    $(function()
-    {
-      $('[name="hospinfodisplay"]').click(function()
-      {
-        if ($(this).is(':checked')) {
-
-			$("#clinic_info_display").hide();
-			$("#hospital_info_display").show();
-			$(".clinic_checkbox").prop("checked", false);
-
-		};	
-	  });
-	  
-	 /***Hospital***/
-	 $('[name="clinicinfodisplay"]').click(function()
-      {
-        if ($(this).is(':checked')) {
-
-			$("#clinic_info_display").show();
-			$("#hospital_info_display").hide();
-			
-			$(".hospital_checkbox").prop("checked", false);
-			
-      
-		};
-      });
-    });
-  </script>
  
 	</body>
 </html>
