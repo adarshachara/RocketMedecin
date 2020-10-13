@@ -206,11 +206,11 @@
 							<div class="dropdown-menu dropdown-menu-right">
 								<div class="user-header">
 									<div class="avatar avatar-sm">
-										<img src="assets/img/patients/patient.jpg" alt="User Image" class="avatar-img rounded-circle">
+										<img id="avtar_img" src="assets/img/patients/patient.jpg" alt="User Image" class="avatar-img rounded-circle">
 									</div>
 									<div class="user-text">
-										<h6 ><span id="firstname"></h6>
-										<p class="text-muted mb-0">Patient</p>
+										<h6 ><span ></h6>
+										<p id="avtar_fname" class="text-muted mb-0">Patient</p>
 									</div>
 								</div>
 								<a class="dropdown-item" href="patient-dashboard.html">Dashboard</a>
@@ -1096,6 +1096,7 @@
 		                   $("#lastname_placeholder").attr("placeholder", lastname);
 						   $("#email_placeholder").attr("placeholder", emailid );
 						   $("#phone_placeholder").attr("placeholder", mobileid );
+						   $("#avtar_fname").text(firstname);
 
 	
 					
@@ -1167,6 +1168,7 @@
 					$.ajax(settings).done(function (response) {					
 						$("#profileimage").attr("src", "data: image / jpeg; base64," + response);
                         $("#user-img").attr("src", "data: image / jpeg; base64," + response);
+						$("#avtar_img").attr("src", "data: image / jpeg; base64," + response);
 					});
 
 
