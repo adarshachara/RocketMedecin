@@ -7,7 +7,7 @@ var educationCounter = 1;
 var awardCounter=1;
 var experienceCounter=1;
 function saveEducationInfo(){
-	alert("1");
+	alert("0");
 	/*	Post:
 		{"DoctorNo":"4","Degree":"Degree 1","CollegeName":"College 1","Completedyear":"2012","orderby":"1"},
 		{"DoctorNo":"4","Degree":"Degree 2","CollegeName":"College 2","Completedyear":"2008","orderby":"2"},

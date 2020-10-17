@@ -1578,7 +1578,7 @@ button.bg-danger:hover {
 	position: relative;
 }
 .form-focus .focus-label {
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 400;
 	pointer-events: none;
 	position: absolute;
@@ -1589,7 +1589,7 @@ button.bg-danger:hover {
 	transform-origin: left top;
 	transition: 240ms;
 	left: 12px;
-	top: -8px;
+	top: -15px;
 	z-index: 1;
 	color: #b8b8b8;
 	margin-bottom: 0;
