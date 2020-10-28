@@ -4,7 +4,8 @@
 		<meta charset="utf-8">
 		<title>Rocket Medecin</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-		
+		<!--Sweet Alert -->
+		<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 		<!-- Favicons -->
 		<link href="assets/img/favicon.png" rel="icon">
 		
@@ -114,22 +115,22 @@
 
 	// 				function save() {
 	// 			    point = marker.getPosition();
-	// 				//alert("Save this location" +point+"?" );
+	// 				//console.log("Save this location" +point+"?" );
 						
   	// 				var txt;
  	// 				var r = confirm("Save Location");
   	// 				if (r == true) {
 	  				
 	//   				markervalue=(JSON.stringify(point));
-	// 				alert(markervalue);  
+	// 				console.log(markervalue);  
     // 				// txt = "You pressed OK!";
 	// 				localStorage.setItem('markervalue', markervalue);
 					
 
-	// 				alert("Location Saved");
+	// 				console.log("Location Saved");
   	// 				} else {
     // 				// txt = "You pressed Cancel!";
-	// 				alert("Please Select New Location");
+	// 				console.log("Please Select New Location");
   	// 				}
 	// 			//   document.getElementById("demo").innerHTML = txt;
 	// 			}
@@ -154,10 +155,10 @@
 			var firstname ,lastname ,  emailid , mobileid, authToken , user_ID ;
 			
 			window.onload = function () {
-
+                
 				authToken= " bearer " +localStorage.getItem("tokenid");
 				user_ID=localStorage.getItem("docid");
-				//alert(authToken);
+				//console.log(authToken);
 				
 
              /*   Logic for Get  
@@ -178,7 +179,7 @@
 			} 
 			}
 			
-			alert(data.userid);
+			console.log(data.userid);
 			var user_ID = data.userid;
 			*/
 		
@@ -193,6 +194,9 @@
 				$.ajax(settings2).done(function (response2) {
 					//console.log("patient details ;"+ response2);
 					
+
+				
+
 				var data = $.parseJSON(response2);
 							
 				$('#append_list').append('<p>' + data.PatientDtls[0].PatientId + '</p>');
@@ -201,6 +205,8 @@
 						 $('#email_ID').append('<p>' + data.PatientDtls[0].EmailId1 + '</p>');
 							  $('#first_name').append('<p>' + data.PatientDtls[0].Firstname + '</p>');
 								   $('#nav_name').append(  data.PatientDtls[0].Firstname );
+								   $('#dropdown').append(  data.PatientDtls[0].Gender );
+								    
 									$('#image').prepend('<img id="theImg" src="./images/patient_image.png" alt="" class="img-fluid img-thumbnail" />');
 
 				});
@@ -220,16 +226,16 @@
 			 "headers": { "Authorization":  authToken
 				 }
 			 };
-			 //alert(docIDGlobal);
+			 //console.log(docIDGlobal);
 			$.ajax(setting1).done(function (resp1) {
 				//sleep(10);
 				//console.log(resp1);
 				//console.log("Doctor details;"+ resp1);
 				// convert resp1 from json to key value pair
 				var data = $.parseJSON(resp1);
-			  //alert(JSON.stringify(data));
+			  //console.log(JSON.stringify(data));
 		        console.log(JSON.stringify(data));
-			
+				console.log(JSON.stringify(data));
 			$('#append_list').append('<p>' + user_ID+ '</p>');
 					 $('#firstname1').append('<p>' + data.DoctorDtls[0].Firstname + '</p>');
 					   $('#lastname').append('<p>' + data.DoctorDtls[0].Lastname + '</p>');
@@ -369,8 +375,6 @@
 						console.log(response);
                         $("#profileimg").attr("src", "data: image / jpeg; base64," + response);
                         $("#user-img").attr("src", "data: image / jpeg; base64," + response);
-						$("#avtar_img").attr("src", "data: image / jpeg; base64," + response);
-
                     }); 
                 }
 				load_certificate(docIDGlobal);
@@ -509,7 +513,7 @@
 							</div>
 							<div class="header-contact-detail">
 								<p class="contact-header">Contact</p>
-								<p class="contact-info-header"> +91 9886720987</p>
+								<p class="contact-info-header"> +1 (732) 258-5168</p>
 							</div>
 						</li>
 						<!-- User Menu -->
@@ -522,7 +526,7 @@
 							<div class="dropdown-menu dropdown-menu-right">
 								<div class="user-header">
 									<div class="avatar avatar-sm">
-										<img id ="avtar_img" src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image" class="avatar-img rounded-circle">
+										<img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image" class="avatar-img rounded-circle">
 									</div>
 									<div class="user-text">
 										<h6>Darren Elder</h6>
@@ -556,8 +560,7 @@
 					</div>
 				</div>
 			</div>
-			
-			<!-- Breadcrumb -->
+			<!-- /Breadcrumb -->
 			
 			<!-- Page Content -->
 			<div class="content">
@@ -738,14 +741,14 @@
 					<div class="col-12 col-md-4">
 											<div class="form-group">
 												<label>Mobile number <span class="text-danger">*</span></label>
-												<input type="Number" min="0" class="form-control" class="mobile" id="mobileNumm" required>
+												<input type="Number" class="form-control" class="mobile" id="mobileNumm" required>
 											</div>
 										</div>
 					
 					<div class="col-12 col-md-4">
 											<div class="form-group">
 												<label>Gender</label>
-												<select class="form-control select" id="gendertype">
+												<select class="form-control select" id="gendertype" >
 													
 													<option value="Male">Male</option>
 													<option value="Female">Female</option>
@@ -803,7 +806,7 @@
                   							<div class="col-12 col-md-6">
 												<div class="form-group">
 													<label>ID proof number</label>
-													<input type="Number" min="0" class="form-control" id="proofno" required placeholder="Please Enter Adhaar no" min="0">
+													<input type="number" class="form-control" id="proofno" required placeholder="Please Enter Adhaar no">
 												</div> 
 											</div>
 											</div>
@@ -887,25 +890,25 @@
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Postal Code</label>
-							<input type="Number" min="0" class="form-control" id="postalcode" required placeholder="Please Enter Postal Code">
+							<input type="number" class="form-control" id="postalcode" required placeholder="Please Enter Postal Code">
 						</div>
 					</div>
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Alternate Phone 1</label>
-							<input type="Number" min="0" min="0" class="form-control" id="phone1" required placeholder="Please Enter Phoneno 1 ">
+							<input type="number" class="form-control" id="phone1" required placeholder="Please Enter Phoneno 1 ">
 						</div>
 					</div>
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Alternate Phone 2</label>
-							<input type="Number" min="0" min="0" class="form-control" id="phone2" required placeholder="Please Enter Phoneno 2 ">
+							<input type="number" class="form-control" id="phone2" required placeholder="Please Enter Phoneno 2 ">
 						</div>
 					</div>
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Alternate Phone 3</label>
-							<input type="Number" min="0" min="0" class="form-control" id="phone3" required placeholder="Please Enter Phoneno 3">
+							<input type="number" class="form-control" id="phone3" required placeholder="Please Enter Phoneno 3">
 						</div>
 					</div>
 				</div>
@@ -977,26 +980,26 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 1</label>
-									<input type="Number" min="0" min="0" class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
+									<input type="Number" class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 2</label>
-									<input type="Number" min="0" min="0" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
+									<input type="Number" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 3</label>
-									<input type="Number" min="0" min="0" class="form-control" id="ClincPhone3" placeholder="Please Enter Phone no">
+									<input type="Number" class="form-control" id="ClincPhone3" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Add amount</label>
-									<input type="Number" min="0" min="0" class="form-control" id="ClincAmount" placeholder="Please Enter Amount"> 
+									<input type="Number" class="form-control" id="ClincAmount" placeholder="Please Enter Amount"> 
 								</div>
 								<div class="add-more">
 									<a href="javascript:void(0);" class="add-clinic"><i class="fa fa-plus-circle"></i> Add More</a>
@@ -1005,7 +1008,7 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">GST</label>
-									<input type="text" class="form-control" id="ClincGST" placeholder="Please Enter GST no">
+									<input type="Number" class="form-control" id="ClincGST" placeholder="Please Enter GST no">
 								</div>
 							</div>
 						   
@@ -1039,26 +1042,26 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 1</label>
-									<input type="Number" min="0"  class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
+									<input type="number" class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 2</label>
-									<input type="Number" min="0" min="0" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
+									<input type="number" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 3</label>
-									<input type="Number" min="0" class="form-control" id="ClincPhone3"  placeholder="Please Enter Phone no">
+									<input type="number" class="form-control" id="ClincPhone3"  placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Add amount</label>
-									<input type="Number" min="0" class="form-control" id="ClincAmount"  placeholder="Please Enter Amount">
+									<input type="number" class="form-control" id="ClincAmount"  placeholder="Please Enter Amount">
 								</div>
 								<div class="add-more">
 									<a href="javascript:void(0);" class="add-clinic"><i class="fa fa-plus-circle"></i> Add More</a>
@@ -1067,7 +1070,7 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">GST</label>
-									<input type="text"  class="form-control" id="ClincGST"  placeholder="Please Enter GST">
+									<input type="number" class="form-control" id="ClincGST"  placeholder="Please Enter GST">
 								</div>
 							</div>
 							
@@ -1130,7 +1133,7 @@
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>Year of Completion</label>
-															<input type="Number" min="0" class="form-control" id="yocID" placeholder="Please Enter Year"/>
+															<input type="number" class="form-control" id="yocID" placeholder="Please Enter Year"/>
 														</div> 
 													</div>
 												
@@ -1171,13 +1174,13 @@
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>Start year</label>
-															<input type="Number" min="0" class="form-control" placeholder="yyyy" id="start_date" placeholder="Please Enter Year">
+															<input type="number" class="form-control" placeholder="yyyy" id="start_date" placeholder="Please Enter Year">
 														</div> 
 													</div>
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>End year / till date</label>
-															<input type="Number" min="0" class="form-control" placeholder="yyyy" id="end_date" placeholder="Please Enter Year">
+															<input type="number" class="form-control" placeholder="yyyy" id="end_date" placeholder="Please Enter Year">
 														</div> 
 													</div>
 													<div class="col-12 col-md-6 col-lg-4">
@@ -1212,7 +1215,7 @@
 											<div class="col-12 col-md-5">
 												<div class="form-group">
 													<label>Year</label>
-													<input type="Number" min="0" class="form-control" id="awards_year"  placeholder="Please Enter year">
+													<input type="number" class="form-control" id="awards_year"  placeholder="Please Enter year">
 												</div> 
 											</div>
 										</div>
@@ -1259,7 +1262,7 @@
 											<div class="col-12 col-md-5">
 												<div class="form-group">
 													<label>Year</label>
-													<input type="Number" min="0" class="form-control" id="registeration_year"  placeholder="Please Enter year">
+													<input type="number" class="form-control" id="registeration_year"  placeholder="Please Enter year">
 												</div> 
 											</div>
 										</div>
@@ -1407,11 +1410,11 @@
 										</div>
 										<p>
 											<i class="fas fa-phone-alt"></i>
-											+91 9886720987
+											+1 (732) 258-5168
 										</p>
 										<p class="mb-0">
 											<i class="fas fa-envelope"></i>
-											<a class="text-primary" href="mailto:info@rocketmedecin.com" target="_blank">info@rocketmedecin.com</a>
+											info@rocketmedecin.com
 										</p>
 									</div>
 								</div>
@@ -1433,7 +1436,7 @@
 							<div class="row">
 								<div class="col-md-6 col-lg-6">
 									<div class="copyright-text">
-										<p class="mb-0">&copy; 2020 Rocket Medecin. All rights reserved. | Powered by <a href="https://pixtontechnologies.com/" title="Pixton Technologies" target="_blank">Pixton Technologies</a> &amp; <a href="https://medianurture.com/" title="Media Nurture LLP" target="_blank">Media Nurture LLP</a></p>
+										<p class="mb-0">&copy; 2020 Rocket Medecin. All rights reserved. | Powered by Pixton Technologies</p>
 									</div>
 								</div>
 								<div class="col-md-6 col-lg-6">
@@ -1579,10 +1582,6 @@
 				localStorage.setItem("lat",lat);
 				localStorage.setItem("long",long);
 
-				$('#edit_time_slot').modal('toggle');
-
-				alert("Location Saved Successfully");				
-			
 			
 
 			}
@@ -1696,7 +1695,7 @@
 			//Save User Info:
 			function saveUserInfo()
 			{
-			//alert("Running");
+			//console.log("Running");
 			var gend = document.getElementById("gendertype");
 			var strGender = gend.options[gend.selectedIndex].value;
 			var DateOB= $('#dob').val();
@@ -1710,8 +1709,9 @@
     			var month = splitDate[1];
     			var day = splitDate[0]; 
 
-				/***Age  Verification ***/
-				var age = 16;
+
+					/***Age  Verification ***/
+					var age = 16;
 				var mydate = new Date();
 				mydate.setFullYear(year, month-1, day);
 
@@ -1719,13 +1719,12 @@
 				var currdate = new Date();
 				currdate.setFullYear(currdate.getFullYear() - age);
 				if ((currdate - mydate) < 0){
-					alert("Sorry, only persons over the age of " + age + " can register");
+					// alert("Sorry, only persons over the age of " + age + " can register");
+					swal("Error!", "Sorry, only persons over the age of!"  + age + " can register", "error");
 				     return ;
 					}
 				
 					/***Age  Verification ***/
-				
-
 
     			return month + '/' + day + '/' + year;
 				}
@@ -1755,12 +1754,12 @@
 				error: function(xhr, status, error) {
 					  var err = eval("(" + xhr.responseText + ")");
 					  console.log(err.Message);
-  					alert("Error: Pease Try Again with Valid User Info"+ authToken );
+  					console.log("Error: Pease Try Again with Valid User Info"+ authToken );
 				
 				},
 				success: function(response){
 						console.log("UserInfo Response:"+response);
-						alert('Doctors Basic Info Updated Successfully !!');
+						console.log('Doctors Basic Info Updated Successfully !!');
 					}
 			});
 			}
@@ -1797,13 +1796,13 @@
   					var err = eval("(" + xhr.responseText + ")");
 					console.log("Ajax call atleast happened");
 					console.log(err.Message);
-  					alert("Error: Pease Try Again with Valid Hospital/Clinic Checkbox");
+  					console.log("Error: Pease Try Again with Valid Hospital/Clinic Checkbox");
 				   
 				},
 				success: function(response){
 						console.log(response);
 						console.log("Your ID : "+response);
-						alert('Doctors Hspital/Clinic Info Updated Successfully !!');
+						console.log('Doctors Hspital/Clinic Info Updated Successfully !!');
 						}
 			});
 			saveClinicInfo();
@@ -1931,7 +1930,7 @@ $.ajax(settings).done(function (response) {
 					   };
 
 					   
-			// alert(JSON.stringify(data1));
+			// console.log(JSON.stringify(data1));
 				console.log("Basic Info Data :"+JSON.stringify(data1));
 			$.ajax({
 				url: "http://www.rocketmedecin.com/rocketmed/api/Doctor/"+docIDGlobal+"?page=2",
@@ -1945,9 +1944,9 @@ $.ajax(settings).done(function (response) {
   					var err = eval("(" + xhr.responseText + ")");
 					  console.log('ajax call atleasy happened');
 					  console.log(err.Message);
-  				//	alert(err.Message);
-				//	alert(status);
-					alert("Error: Pease Try Again with Valid Contact Details");
+  				//	console.log(err.Message);
+				//	console.log(status);
+					console.log("Error: Pease Try Again with Valid Contact Details");
 
 					// if (response == null)
 					// 	{
@@ -1959,18 +1958,18 @@ $.ajax(settings).done(function (response) {
 					// 	}
 					// 	else{
 					// 		console.log("Your ID : "+response);
-					// 	alert('Record Updated Successfully Inside Error');
+					// 	console.log('Record Updated Successfully Inside Error');
 					// 	//baseURL=document.location.href;
-					// 	//alert(baseURL);
+					// 	//console.log(baseURL);
 					// 	//window.open('doctor-dashboard.html', "_self");
 					// 	}
 				},
 				success: function(response){
 						console.log(response);
 						console.log("Your ID : "+response);
-						alert('Doctors Contact Info Updated Successfully !!');
+						console.log('Doctors Contact Info Updated Successfully !!');
 						//baseURL=document.location.href;
-						//alert(baseURL);
+						//console.log(baseURL);
 						//window.open('doctor-dashboard.html', "_self");
 						
 						//document.location.href = "./login.html" , target="_blank";
@@ -2075,14 +2074,14 @@ $.ajax(settings).done(function (response) {
   					var err = eval("(" + xhr.responseText + ")");
   					console.log("Error Message"+err.Message);	
 					console.log('ajax call happening 1')	
-				 alert("Error saving Clinic Info. Pease Try Again");
+				 console.log("Error saving Clinic Info. Pease Try Again");
 					
 				},
 				success: function(response1){ 
 						console.log(response1);
 						
 						console.log("Clinic Info Updated : "+response1);
-						alert('Clinic/Hospital Info Updated Successfully !!');
+						console.log('Clinic/Hospital Info Updated Successfully !!');
 						}
 			});
 
@@ -2099,14 +2098,14 @@ $.ajax(settings).done(function (response) {
   			// 		var err = eval("(" + xhr.responseText + ")");
   			// 		console.log("Error Message"+err.Message);	
 			// 		console.log('ajax call happening 1')	
-			// 	 alert("Error saving Clinic Info. Pease Try Again");
+			// 	 console.log("Error saving Clinic Info. Pease Try Again");
 					
 			// 	},
 			// 	success: function(response1){ 
 			// 			console.log(response1);
 						
 			// 			console.log("Clinic Info Updated : "+response1.ClinicId);
-			// 			alert('Clinic/Hospital Info Updated Successfully !!');
+			// 			console.log('Clinic/Hospital Info Updated Successfully !!');
 			// 			}
 			// });
 			
@@ -2148,13 +2147,13 @@ $.ajax(settings).done(function (response) {
 					error: function(xhr, status, error) {
 						  var err = eval("(" + xhr.responseText + ")");
 						  console.log("Error Message"+err.Message);		
-						alert("Error saving Clinic Specialization Info. Pease Try Again");
+						console.log("Error saving Clinic Specialization Info. Pease Try Again");
 						
 					},
 					success: function(response1){
 							console.log(response1);
 							console.log("Clinic Specializations Info Updated !! ");
-							alert('Clinic Specialization Info Updated Successfully!!');
+							console.log('Clinic Specialization Info Updated Successfully!!');
 							}
 				});
 		}
@@ -2197,13 +2196,13 @@ $.ajax(settings).done(function (response) {
 					error: function(xhr, status, error) {
 						  var err = eval("(" + xhr.responseText + ")");
 						  console.log("Error Message"+err.Message);		
-						alert("Error saving Clinic Services Info. Pease Try Again");
+						console.log("Error saving Clinic Services Info. Pease Try Again");
 						
 					},
 					success: function(response1){
 							console.log(response1);
 							console.log("Clinic Services Info Updated !!");
-							alert('Clinic Services Info Updated Successfully !!');
+							console.log('Clinic Services Info Updated Successfully !!');
 							}
 				});
 		}	
@@ -2226,7 +2225,7 @@ var hospitalCounter=1;
 
 
 function saveHospexperience(){
-	alert("Save Hospital Experience");
+	console.log("Save Hospital Experience");
 	/*	Post:
 		{"DoctorNo":"4","Degree":"Degree 1","CollegeName":"College 1","Completedyear":"2012","orderby":"1"},
 		{"DoctorNo":"4","Degree":"Degree 2","CollegeName":"College 2","Completedyear":"2008","orderby":"2"},
@@ -2237,7 +2236,7 @@ function saveHospexperience(){
 		DoctorNo:"4",Degree:"Degree 2",CollegeName:"College 2",Completedyear:"2008",orderby:"2",
 			DoctorNo:"4",Degree:"Degree 3",CollegeName:"College 3","Completedyear":"2006","orderby":"3"
 		*/
-		//alert(educationCounter);
+		//console.log(educationCounter);
 		var hospital = document.getElementById("hospital_name").value;
 		var hospitaldesignation = document.getElementById("hospital_designation").value;
 		var Datestart= $('#start_date').val();
@@ -2275,7 +2274,7 @@ function saveHospexperience(){
 				var Dateend = changeDateFormat2( Dateend );
 
 	
-			//alert("docID"+docIDGlobal);
+			//console.log("docID"+docIDGlobal);
 			*/
 			
 		let data11={ DoctorNo:docIDGlobal,Hospname:hospital,WorkFrom:Datestart,WorkTo:Dateend,Designation:hospitaldesignation,Presentworking:"1"};
@@ -2294,12 +2293,12 @@ function saveHospexperience(){
 				d13  = {DoctorNo:docIDGlobal,Hospname:hospital,WorkFrom:Datestart,WorkTo:Dateend,Designation:hospitaldesignation,Presentworking:"1" };
 				
 				d12 += ","+ JSON.stringify(d13) ;
-				alert(d12.toString());
+				console.log(d12.toString());
 			}
 		}
 		console.log("data3: "+d12)
-		//alert(data3);
-		//alert(JSON.stringify(data3));
+		//console.log(data3);
+		//console.log(JSON.stringify(data3));
 		
 			$.ajax({
 				    
@@ -2313,13 +2312,13 @@ function saveHospexperience(){
 					error: function(xhr, status, error) {
 						  var err = eval("(" + xhr.responseText + ")");
 						  console.log("Error Message"+err.Message);		
-						alert("Error saving Clinic Info. Pease Try Again");
+						console.log("Error saving Clinic Info. Pease Try Again");
 						
 					},
 					success: function(response1){
 							console.log(response1);
 							console.log("Save Hospital Experience ");
-							alert('Save Hospital Experience Successfull !!');
+							console.log('Save Hospital Experience Successfull !!');
 							}
 				});
 
@@ -2329,7 +2328,7 @@ function saveHospexperience(){
 
 
 	function saveEducationInfo(){
-	alert("Experience info");
+	console.log("Experience info");
 	/*	Post:
 		{"DoctorNo":"4","Degree":"Degree 1","CollegeName":"College 1","Completedyear":"2012","orderby":"1"},
 		{"DoctorNo":"4","Degree":"Degree 2","CollegeName":"College 2","Completedyear":"2008","orderby":"2"},
@@ -2340,12 +2339,12 @@ function saveHospexperience(){
 		DoctorNo:"4",Degree:"Degree 2",CollegeName:"College 2",Completedyear:"2008",orderby:"2",
 			DoctorNo:"4",Degree:"Degree 3",CollegeName:"College 3","Completedyear":"2006","orderby":"3"
 		*/
-		//alert(educationCounter);
+		//console.log(educationCounter);
 		var degreeID = document.getElementById("degreeID").value;
 		var collegeID = document.getElementById("collegeID").value;
 		var yocID = document.getElementById("yocID").value;
 	
-			//alert("docID"+docIDGlobal);
+			//console.log("docID"+docIDGlobal);
 		let data3={
 			DoctorNo:docIDGlobal,Degree:degreeID,CollegeName:collegeID,Completedyear:yocID,orderby:"1"
 		};
@@ -2362,12 +2361,12 @@ function saveHospexperience(){
 				d2  = {DoctorNo:docIDGlobal,Degree:degreeID,CollegeName:collegeID,Completedyear:yocID,orderby:educationCounter};
 				
 				d1 += ","+ JSON.stringify(d2) ;
-				alert(d1.toString());
+				console.log(d1.toString());
 			}
 		}
 		console.log("data3: "+d1)
-		//alert(data3);
-		//alert(JSON.stringify(data3));
+		//console.log(data3);
+		//console.log(JSON.stringify(data3));
 		
 			$.ajax({
 					url: "http://www.rocketmedecin.com/rocketmed/api/DocEdu/"+docIDGlobal,
@@ -2380,13 +2379,13 @@ function saveHospexperience(){
 					error: function(xhr, status, error) {
 						  var err = eval("(" + xhr.responseText + ")");
 						  console.log("Error Message"+err.Message);		
-						alert("Error saving Clinic Info. Pease Try Again");
+						console.log("Error saving Clinic Info. Pease Try Again");
 						
 					},
 					success: function(response1){
 							console.log(response1);
 							console.log("Educcation Info Updated : ");
-							alert('Education Info Updated Successfully !!');
+							console.log('Education Info Updated Successfully !!');
 							}
 				});
 
@@ -2401,13 +2400,13 @@ function saveHospexperience(){
 	function saveExpCertificates()
 	{
 
-		alert("Experience Certificate");
+		console.log("Experience Certificate");
 
 		var degreeID = document.getElementById("degreeID").value;
 		var collegeID = document.getElementById("collegeID").value;
 		var yocID = document.getElementById("yocID").value;
 	
-			//alert("docID"+docIDGlobal);
+			//console.log("docID"+docIDGlobal);
 		let data3={
 			DoctorNo:docIDGlobal,Degree:degreeID,CollegeName:collegeID,Completedyear:yocID,orderby:"1"
 		};
@@ -2424,12 +2423,12 @@ function saveHospexperience(){
 				d2  = {DoctorNo:docIDGlobal,Degree:degreeID,CollegeName:collegeID,Completedyear:yocID,orderby:educationCounter};
 				
 				d1 += ","+ JSON.stringify(d2) ;
-				alert(d1.toString());
+				console.log(d1.toString());
 			}
 		}
 		console.log("data3: "+d1)
-		//alert(data3);
-		//alert(JSON.stringify(data3));
+		//console.log(data3);
+		//console.log(JSON.stringify(data3));
 		
 			$.ajax({
 					url: "http://www.rocketmedecin.com/rocketmed/api/DocEdu/"+docIDGlobal,
@@ -2442,13 +2441,13 @@ function saveHospexperience(){
 					error: function(xhr, status, error) {
 						  var err = eval("(" + xhr.responseText + ")");
 						  console.log("Error Message"+err.Message);		
-						alert("Error saving Clinic Info. Pease Try Again");
+						console.log("Error saving Clinic Info. Pease Try Again");
 						
 					},
 					success: function(response1){
 							console.log(response1);
 							console.log("Education Info Updated : ");
-							alert('Education Info Updated Successfully !!');
+							console.log('Education Info Updated Successfully !!');
 							}
 				});
 		
@@ -2547,7 +2546,7 @@ function load_documents(doc_id){
 			}; 
 			$.ajax(settings).done(function (response) { 
 				//console.log(response); 
-				alert("Document deleted successfully")
+				console.log("Document deleted successfully")
 				load_certificate(docIDGlobal);
 				load_documents(docIDGlobal);
 
@@ -2557,12 +2556,12 @@ function load_documents(doc_id){
 		function saveExpDetails()
 		{
 			
-		alert("Save Experience");
+		console.log("Save Experience");
         var awards = document.getElementById("awards_name").value;
 		var year  = document.getElementById("awards_year").value;
 
 
-		//alert("docID"+docIDGlobal);
+		//console.log("docID"+docIDGlobal);
 		let data4={
 			DoctorNo:docIDGlobal,AwardName:awards,year:year,orderby:"1"
 		};
@@ -2581,12 +2580,12 @@ function load_documents(doc_id){
 				d5  = {DoctorNo:docIDGlobal,AwardName:awards,year:year,orderby:awardCounter};
 				
 				d4 += ","+ JSON.stringify(d5) ;
-				alert(d4.toString());
+				console.log(d4.toString());
 			}
 		}
 		console.log("data4: "+d4)
-		//alert(data3);
-		//alert(JSON.stringify(data3));
+		//console.log(data3);
+		//console.log(JSON.stringify(data3));
 		
 			$.ajax({
 					url: "http://www.rocketmedecin.com/rocketmed/api/DocAward/"+docIDGlobal,
@@ -2599,13 +2598,13 @@ function load_documents(doc_id){
 					error: function(xhr, status, error) {
 						  var err = eval("(" + xhr.responseText + ")");
 						  console.log("Error Message"+err.Message);		
-						alert("Error saving Clinic Info. Pease Try Again");
+						console.log("Error saving Clinic Info. Pease Try Again");
 						
 					},
 					success: function(response1){
 							console.log(response1);
 							console.log("award Info Updated : ");
-							alert('award Info Updated Successfully !!');
+							console.log('award Info Updated Successfully !!');
 							}
 				});
 	
@@ -2620,12 +2619,12 @@ function load_documents(doc_id){
 		function saveAwards()
 		{
 
-		alert("awards");
+		console.log("awards");
         var awards = document.getElementById("awards_name").value;
 		var year  = document.getElementById("awards_year").value;
 
 
-		//alert("docID"+docIDGlobal);
+		//console.log("docID"+docIDGlobal);
 		let data4={
 			DoctorNo:docIDGlobal,AwardName:awards,year:year,orderby:"1"
 		};
@@ -2644,12 +2643,12 @@ function load_documents(doc_id){
 				d5  = {DoctorNo:docIDGlobal,AwardName:awards,year:year,orderby:awardCounter};
 				
 				d4 += ","+ JSON.stringify(d5) ;
-				alert(d4.toString());
+				console.log(d4.toString());
 			}
 		}
 		console.log("data4: "+d4)
-		//alert(data3);
-		//alert(JSON.stringify(data3));
+		//console.log(data3);
+		//console.log(JSON.stringify(data3));
 		
 			$.ajax({
 					url: "http://www.rocketmedecin.com/rocketmed/api/DocAward/"+docIDGlobal,
@@ -2662,13 +2661,13 @@ function load_documents(doc_id){
 					error: function(xhr, status, error) {
 						  var err = eval("(" + xhr.responseText + ")");
 						  console.log("Error Message"+err.Message);		
-						alert("Error saving Clinic Info. Pease Try Again");
+						console.log("Error saving Clinic Info. Pease Try Again");
 						
 					},
 					success: function(response1){
 							console.log(response1);
 							console.log("award Info Updated : ");
-							alert('award Info Updated Successfully !!');
+							console.log('award Info Updated Successfully !!');
 							}
 				});
 	
@@ -2689,12 +2688,12 @@ function load_documents(doc_id){
 function saveMembership()
 	{
 		
-		alert("Membership");
+		console.log("Membership");
         var membership = document.getElementById("membership_value").value;
 
 
 
-		//alert("docID"+docIDGlobal);
+		//console.log("docID"+docIDGlobal);
 		let data5={
 			DoctorNo:docIDGlobal,MemberShipDtlsName:membership,orderby:"1"
 	     };
@@ -2713,12 +2712,12 @@ function saveMembership()
 				d7  = {DoctorNo:docIDGlobal,MemberShipDtlsName:membership,orderby:membershipcounter};
 				
 				d6 += ","+ JSON.stringify(d7) ;
-				alert(d6.toString());
+				console.log(d6.toString());
 			}
 		}
 		console.log("data5: "+d6)
-		//alert(data3);
-		//alert(JSON.stringify(data3));
+		//console.log(data3);
+		//console.log(JSON.stringify(data3));
 		
 			$.ajax({
 					url: "http://www.rocketmedecin.com/rocketmed/api/DocMem/"+docIDGlobal,
@@ -2731,13 +2730,13 @@ function saveMembership()
 					error: function(xhr, status, error) {
 						  var err = eval("(" + xhr.responseText + ")");
 						  console.log("Error Message"+err.Message);		
-						alert("Error saving Membership. Pease Try Again");
+						console.log("Error saving Membership. Pease Try Again");
 						
 					},
 					success: function(response1){
 							console.log(response1);
 							console.log("Membership Info Updated : ");
-							alert('Membership Info Updated Successfully !!');
+							console.log('Membership Info Updated Successfully !!');
 							}
 				});
 	
@@ -2751,14 +2750,14 @@ function saveMembership()
 
 function savePracticeReg()
 	{
-		alert("Save Practice registeration");
+		console.log("Save Practice registeration");
 		var registeration_name = document.getElementById("registeration_no").value;
 		var registeration_year1 = document.getElementById("registeration_year").value;
 
 		
 		
 
-		//alert("docID"+docIDGlobal);
+		//console.log("docID"+docIDGlobal);
 		let data8={
 			DoctorNo:docIDGlobal,RegistrationName:registeration_name,Year:registeration_year1,orderby:"1"
 	     };
@@ -2779,12 +2778,12 @@ function savePracticeReg()
 				d10  = {DoctorNo:docIDGlobal,RegistrationName:registeration_name,Year:registeration_year1,orderby:registerCounter};
 				
 				d9 += ","+ JSON.stringify(d10) ;
-				alert(d9.toString());
+				console.log(d9.toString());
 			}
 		}
 		console.log("data8: "+d9)
-		//alert(data3);
-		//alert(JSON.stringify(data3));
+		//console.log(data3);
+		//console.log(JSON.stringify(data3));
 		
 			$.ajax({
 					url: "http://www.rocketmedecin.com/rocketmed/api/DocRegDet/"+docIDGlobal,
@@ -2797,13 +2796,13 @@ function savePracticeReg()
 					error: function(xhr, status, error) {
 						  var err = eval("(" + xhr.responseText + ")");
 						  console.log("Error Message"+err.Message);		
-						alert("Error saving Membership. Pease Try Again");
+						console.log("Error saving Membership. Pease Try Again");
 						
 					},
 					success: function(response1){
 							console.log(response1);
 							console.log("Registeration Info Updated : ");
-							alert('Registeration  Info Updated Successfully !!');
+							console.log('Registeration  Info Updated Successfully !!');
 							// submit_redirect();
 							}
 				});
@@ -2813,7 +2812,7 @@ function savePracticeReg()
 
 // function submit_redirect()
 // {          
-// 	        alert("Going to doctor dashboard");
+// 	        console.log("Going to doctor dashboard");
 // 	        var doc_url = 'doctor-dashboard.html';
 // 			 window.open(doc_url, "_blank" );
 // }
