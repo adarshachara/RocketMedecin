@@ -741,7 +741,7 @@
 					<div class="col-12 col-md-4">
 											<div class="form-group">
 												<label>Mobile number <span class="text-danger">*</span></label>
-												<input type="Number" class="form-control" class="mobile" id="mobileNumm" required>
+												<input type="Number" class="form-control" class="mobile" id="mobileNumm" min="0" required>
 											</div>
 										</div>
 					
@@ -806,7 +806,7 @@
                   							<div class="col-12 col-md-6">
 												<div class="form-group">
 													<label>ID proof number</label>
-													<input type="number" class="form-control" id="proofno" required placeholder="Please Enter Adhaar no">
+													<input type="text"  class="form-control" id="proofno" required placeholder="Please Enter ID NO " pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==15) return false;"/>
 												</div> 
 											</div>
 											</div>
@@ -890,25 +890,25 @@
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Postal Code</label>
-							<input type="number" class="form-control" id="postalcode" required placeholder="Please Enter Postal Code">
+							<input type="number" min="0" class="form-control" id="postalcode" required placeholder="Please Enter Postal Code">
 						</div>
 					</div>
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Alternate Phone 1</label>
-							<input type="number" class="form-control" id="phone1" required placeholder="Please Enter Phoneno 1 ">
+							<input type="number" min="0" class="form-control" id="phone1" required placeholder="Please Enter Phoneno 1 ">
 						</div>
 					</div>
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Alternate Phone 2</label>
-							<input type="number" class="form-control" id="phone2" required placeholder="Please Enter Phoneno 2 ">
+							<input type="number" min="0" class="form-control" id="phone2" required placeholder="Please Enter Phoneno 2 ">
 						</div>
 					</div>
 					<div class="col-12 col-md-4">
 						<div class="form-group">
 							<label class="control-label">Alternate Phone 3</label>
-							<input type="number" class="form-control" id="phone3" required placeholder="Please Enter Phoneno 3">
+							<input type="number" min="0" class="form-control" id="phone3" required placeholder="Please Enter Phoneno 3">
 						</div>
 					</div>
 				</div>
@@ -980,26 +980,26 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 1</label>
-									<input type="Number" class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
+									<input type="Number" min="0" class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 2</label>
-									<input type="Number" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
+									<input type="Number" min="0" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 3</label>
-									<input type="Number" class="form-control" id="ClincPhone3" placeholder="Please Enter Phone no">
+									<input type="Number" min="0" class="form-control" id="ClincPhone3" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Add amount</label>
-									<input type="Number" class="form-control" id="ClincAmount" placeholder="Please Enter Amount"> 
+									<input type="Number" min="0" class="form-control" id="ClincAmount" placeholder="Please Enter Amount"> 
 								</div>
 								<div class="add-more">
 									<a href="javascript:void(0);" class="add-clinic"><i class="fa fa-plus-circle"></i> Add More</a>
@@ -1008,7 +1008,7 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">GST</label>
-									<input type="Number" class="form-control" id="ClincGST" placeholder="Please Enter GST no">
+									<input type="text" min="0" class="form-control" id="ClincGST" placeholder="Please Enter GST no">
 								</div>
 							</div>
 						   
@@ -1042,26 +1042,26 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 1</label>
-									<input type="number" class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
+									<input type="number" min="0" class="form-control" id="ClincPhone1" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 2</label>
-									<input type="number" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
+									<input type="number" min="0" class="form-control" id="ClincPhone2" placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Alternate Phone 3</label>
-									<input type="number" class="form-control" id="ClincPhone3"  placeholder="Please Enter Phone no">
+									<input type="number" min="0" class="form-control" id="ClincPhone3"  placeholder="Please Enter Phone no">
 								</div>
 							</div>
 							
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">Add amount</label>
-									<input type="number" class="form-control" id="ClincAmount"  placeholder="Please Enter Amount">
+									<input type="number" min="0" class="form-control" id="ClincAmount"  placeholder="Please Enter Amount">
 								</div>
 								<div class="add-more">
 									<a href="javascript:void(0);" class="add-clinic"><i class="fa fa-plus-circle"></i> Add More</a>
@@ -1070,7 +1070,7 @@
 							<div class="col-12 col-md-4">
 								<div class="form-group">
 									<label class="control-label">GST</label>
-									<input type="number" class="form-control" id="ClincGST"  placeholder="Please Enter GST">
+									<input type="text" min="0" class="form-control" id="ClincGST"  placeholder="Please Enter GST">
 								</div>
 							</div>
 							
@@ -1133,7 +1133,7 @@
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>Year of Completion</label>
-															<input type="number" class="form-control" id="yocID" placeholder="Please Enter Year"/>
+															<input type="number" min="0" type="number"  class="form-control" id="yocID" placeholder="Please Enter Year" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;" />
 														</div> 
 													</div>
 												
@@ -1174,13 +1174,13 @@
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>Start year</label>
-															<input type="number" class="form-control" placeholder="yyyy" id="start_date" placeholder="Please Enter Year">
+															<input type="number" min="0" class="form-control" placeholder="yyyy" id="start_date" placeholder="Please Enter Year" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;"/>
 														</div> 
 													</div>
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>End year / till date</label>
-															<input type="number" class="form-control" placeholder="yyyy" id="end_date" placeholder="Please Enter Year">
+															<input type="number" min="0" class="form-control" placeholder="yyyy" id="end_date" placeholder="Please Enter Year" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;">
 														</div> 
 													</div>
 													<div class="col-12 col-md-6 col-lg-4">
@@ -1215,7 +1215,7 @@
 											<div class="col-12 col-md-5">
 												<div class="form-group">
 													<label>Year</label>
-													<input type="number" class="form-control" id="awards_year"  placeholder="Please Enter year">
+													<input type="number" min="0" class="form-control" id="awards_year"  placeholder="Please Enter year" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;"/>
 												</div> 
 											</div>
 										</div>
@@ -1262,7 +1262,7 @@
 											<div class="col-12 col-md-5">
 												<div class="form-group">
 													<label>Year</label>
-													<input type="number" class="form-control" id="registeration_year"  placeholder="Please Enter year">
+													<input type="number" min="0" class="form-control" id="registeration_year"  placeholder="Please Enter year" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;">
 												</div> 
 											</div>
 										</div>
