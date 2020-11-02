@@ -732,7 +732,7 @@
 											<div class="col-12 col-md-5">
 												<div class="form-group">
 													<label>Year</label>
-													<input type="number" class="form-control" id="yearid" placeholder="Please enter Year ">
+													<input type="number" class="form-control" id="yearid" placeholder="Please enter Year "  pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;">
 												</div> 
 											</div>
 										</div>
@@ -817,7 +817,7 @@
 											<div class="col-12 col-md-5">
 												<div class="form-group">
 													<label>Year</label>
-													<input type="Number" class="form-control" id="registeryearid" placeholder="Please Enter Year">
+													<input type="Number" class="form-control" id="registeryearid" placeholder="Please Enter Year"  pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;">
 												</div> 
 											</div>
 										</div>
@@ -882,7 +882,7 @@
 											<div class="col-12 col-md-5">
 												<div class="form-group">
 													<label>Year</label>
-													<input type="text" class="form-control">
+													<input type="number" class="form-control"  pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;">
 												</div> 
 											</div>
 										</div>
