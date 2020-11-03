@@ -415,20 +415,20 @@
 										<div class="col-12 col-md-4">
 											<div class="form-group">
 												<label class="control-label">Insurance provider</label>
-												<input type="text" class="form-control" id="insurance"/>
+												<input type="text" class="form-control" id="insurance" min="0" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==30) return false;"/>
 											</div>
 										</div>
 										<div class="col-12 col-md-4">
 												<div class="form-group">
 													<label>Insurance policy no.</label>
-													<input type="text" class="form-control" id="insurance_policy_no"/>
+													<input type="number" class="form-control" id="insurance_policy_no"  min="0" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==15) return false;"/>
 												</div>
 											</div>
 											<div class="col-12 col-md-4">
 												<div class="form-group">
 													<label>Insurance Expiry Date</label>
 													<div class="cal-icon">
-														<input type="text" class="form-control datetimepicker" placeholder="mm/dd/yyyy" id="IED"/>
+														<input type="text" class="form-control datetimepicker" placeholder="mm/dd/yyyy" id="IED" required/>
 													</div>
 												</div>
 											</div>
