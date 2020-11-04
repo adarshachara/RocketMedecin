@@ -1133,7 +1133,7 @@
 													<div class="col-12 col-md-6 col-lg-4">
 														<div class="form-group">
 															<label>Year of Completion</label>
-															<input type="number" min="0" type="number"  class="form-control" id="yocID" placeholder="Please Enter Year" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;" />
+															<input type="number" min="0" max="2020" type="number"  class="form-control" id="yocID" placeholder="Please Enter Year" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==4) return false;" />
 														</div> 
 													</div>
 												
@@ -1141,7 +1141,7 @@
 										</div>
 									</div>
 									<div class="add-more" style="padding-left:15px;">
-										<a href="javascript:void(0);" class="add-education"><i class="fa fa-plus-circle"></i> Add More</a>
+										<a href="javascript:void(0);" class="add-education1"><i class="fa fa-plus-circle"></i> Add More</a>
 									</div>
 					
 										<div class="form-group" style="padding-left:15px; padding-right:15px">
@@ -1221,8 +1221,8 @@
 										</div>
 									</div>
 									<div class="add-more">
-										<a href="javascript:void(0);" class="add-award"><i class="fa fa-plus-circle"></i> Add More</a>
-									</div>
+										<a href="javascript:void(0);" class="add-award1"><i class="fa fa-plus-circle"></i> Add More</a>
+									</div>"
 					<div class="button-row d-flex mt-4">
                     <button class="btn btn-primary js-btn-prev" type="button" title="Prev">Prev</button>
                      <button id="submit-certificates" class="btn btn-primary ml-auto js-btn-next" type="button" title="Next" onclick="saveEducationInfo()">Next</button>
@@ -2846,7 +2846,7 @@ function savePracticeDocuments()
 		return false;
     });
 	
-    $(".add-education").on('click', function () {
+    $(".add-education1").on('click', function () {
 		
 		var educationcontent = '<div class="row form-row education-cont">' +
 			'<div class="col-12 col-md-10 col-lg-11">' +
@@ -2939,8 +2939,8 @@ function savePracticeDocuments()
 		return false;
     });
 
-    $(".add-award").on('click', function () {
-
+    $(".add-award1").on('click', function () {
+   
         var regcontent = '<div class="row form-row awards-cont">' +
 			'<div class="col-12 col-md-5">' +
 				'<div class="form-group">' +
