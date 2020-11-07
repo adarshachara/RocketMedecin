@@ -88,7 +88,7 @@
 						   $("#email").attr("placeholder", emailid );
 						   $("#phone").attr("placeholder", mobileid );
 
-				
+		     $("#avtar_name").text(data.HospitalDtls[0].Hospitalname) ;	
 			 });
 		localStorage.setItem("hos_name",  firstname);
 			}
@@ -171,6 +171,9 @@
 						
                         $("#profileimg").attr("src", "data: image / jpeg; base64," + response);
                         $("#user-img").attr("src", "data: image / jpeg; base64," + response);
+						$("#avtar_img").attr("src", "data: image / jpeg; base64," + response);
+
+						
                     }); 
 
 		}
@@ -332,10 +335,10 @@
 							<div class="dropdown-menu dropdown-menu-right">
 								<div class="user-header">
 									<div class="avatar avatar-sm">
-										<img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image" class="avatar-img rounded-circle">
+										<img id="avtar_img" src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image" class="avatar-img rounded-circle">
 									</div>
 									<div class="user-text">
-										<h6>Ashwani Maichand</h6>
+										<h6 id="avtar_name">Ashwani Maichand</h6>
 										<p class="text-muted mb-0">Doctor</p>
 									</div>
 								</div>
