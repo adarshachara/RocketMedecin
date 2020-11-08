@@ -236,11 +236,11 @@
 								<div class="card-body">
 									
 									<div class="form-group">
-									<input type="text" class="form-control" placeholder="Dr. Name">
+									<input type="text" id="dr_name" class="form-control" placeholder="Dr. Name">
 							</div>
 									
 									<div class="form-group search-location ">
-									<input type="text" class="form-control" placeholder=" &nbsp; &nbsp; &nbsp; Location">
+									<input type="text"  id="lat_long" class="form-control" placeholder=" &nbsp; &nbsp; &nbsp; Location">
 								</div>
 									
 									
@@ -255,13 +255,13 @@
 									<h4>Gender</h4>
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="gender_type" checked>
+											<input type="checkbox" value="Male" name="gender_type" checked>
 											<span class="checkmark"></span> Male Doctor
 										</label>
 									</div>
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="gender_type">
+											<input type="checkbox" value="Female" name="gender_type">
 											<span class="checkmark"></span> Female Doctor
 										</label>
 									</div>
@@ -270,43 +270,43 @@
 									<h4>Select Specialist</h4>
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialist" checked>
-											<span class="checkmark"></span> Urology
+											<input type="checkbox" value="Urology" name="select_specialist" checked>
+											<span class="checkmark" value="Urology"></span> Urology
 										</label>
 									</div>
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialist" checked>
+											<input type="checkbox" value ="Neurology" name="select_specialist" checked>
 											<span class="checkmark"></span> Neurology
 										</label>
 									</div>
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialist">
+											<input type="checkbox" value="Dentist" name="select_specialist">
 											<span class="checkmark"></span> Dentist
 										</label>
 									</div>
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialist">
+											<input type="checkbox" value="Orthopedic" name="select_specialist">
 											<span class="checkmark"></span> Orthopedic
 										</label>
 									</div>
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialist">
+											<input type="checkbox" value="cardio" name="select_specialist">
 											<span class="checkmark"></span> Cardiologist
 										</label>
 									</div>
 									<div>
 										<label class="custom_check">
-											<input type="checkbox" name="select_specialist">
+											<input type="checkbox" value="Cardiologist" name="select_specialist">
 											<span class="checkmark"></span> Cardiologist
 										</label>
 									</div>
 								</div>
 									<div class="btn-search">
-										<button type="button" class="btn btn-block">Search</button>
+										<button type="button" id="seaerch" onclick="find_results();" class="btn btn-block">Search</button>
 									</div>	
 								</div>
 							</div>
@@ -314,7 +314,7 @@
 							
 						</div>
 						
-						<div class="col-md-12 col-lg-8 col-xl-9">
+						<div id ="doctor_details" class="col-md-12 col-lg-8 col-xl-9">
 
 							<!-- Doctor Widget -->
 							<div class="card">
@@ -852,6 +852,104 @@
 		
 		<!-- Custom JS -->
 		<script src="assets/js/script.js"></script>
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+		<script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCW8Wr6zIAiM-ZeoMJ6wtXmxpNs6ifgiNw&libraries=&v=weekly"
+      defer
+    ></script>
+		<script type="text/javascript">
+
+		    function find_results(){
+
+			
+			var dr_name = document.getElementById("dr_name").value;
+			var lat_long = document.getElementById("lat_long").value;
+			document.querySelectorAll('input[name="color"]:checked')
+			const gender_elements = document.querySelectorAll('input[name="gender_type"]:checked');
+			var gender = [];
+			gender_elements.forEach((gender_element) => {
+				gender.push(gender_element.value);
+				});
+			const speciality_elemnts = document.querySelectorAll('input[name="select_specialist"]:checked');
+			var speciality = [];
+			speciality_elemnts.forEach((speciality_elemnt) => {
+				speciality.push(speciality_elemnt.value);
+				});	
+			console.log(dr_name);
+			console.log(lat_long);
+			console.log(gender);
+			console.log(speciality);
+			var query_string = "srchquery=";
+            if(dr_name) {
+			query_string += "name&val="+dr_name;
+			}
+			if(lat_long) {
+				query_string += "loc&val="+lat_long;
+			}
+			if(gender){
+				query_string += "&fname=gender&fval="+ gender;
+			}
+			if(speciality){
+				query_string += "&fname=specialist&fval=" + speciality;
+			}
+
+			var url = "http://RocketMedecin.com/rocketmed/api/Search?" + query_string
+			console.log(query_string);
+			console.log(url);
+
+			var settings = {
+			"url": url ,
+			"method": "GET",
+			"timeout": 0,
+			};
+
+			$.ajax(settings).done(function (response) {
+			console.log(response);
+			var data = $.parseJSON(response);
+			drs = data["SRCHTBL"]
+			var html ="";
+			length = drs.length
+			if (length ==0){
+				html+="<p> No search result found, Please reset filters and try again </p>"
+			}
+			var form = $("#doctor_details");
+			for (i = 0; i < length; i++) {
+				var value = drs[i];
+				//var lat_lng = value["Lat"] +"," +value["Lng"]
+				//geocodeLatLng(lat_lng);
+			    html += "<div class='card'><div class='card-body'><div class='doctor-widget'><div class='doc-info-left'><div class='doctor-img'><a href='doctor-profile.html'><img src='assets/img/doctors/doctor-thumb-01.jpg' class='img-fluid' alt='User Image'></a></div><div class='doc-info-cont'><h4 class='doc-name' "+value["DoctorNo"]+" ><a href='doctor-profile.html'>"+value["Name"]+ "</a></h4><p class='doc-speciality'>"+value["Specialist"]+"</p><h5 class='doc-department'><img src='assets/img/specialities/specialities-05.png' class='img-fluid' alt='Speciality'>Dentist</h5><div class='rating'><i class='fas fa-star filled'></i><i class='fas fa-star filled'></i><i class='fas fa-star filled'></i><i class='fas fa-star filled'></i><i class='fas fa-star'></i><span class='d-inline-block average-rating'>(17)</span></div><div class='clinic-details'><p class='doc-location'><i class='fas fa-map-marker-alt'></i> "+value["Lat"]+ value["Lng"]+"</p><ul class='clinic-gallery'><li><a href='assets/img/features/feature-01.jpg' data-fancybox='gallery'><img src='assets/img/features/feature-01.jpg' alt='Feature'></a></li><li><a href='assets/img/features/feature-02.jpg' data-fancybox='gallery'><img  src='assets/img/features/feature-02.jpg' alt='Feature'></a></li><li><a href='assets/img/features/feature-03.jpg' data-fancybox='gallery'><img src='assets/img/features/feature-03.jpg' alt='Feature'></a></li><li><a href='assets/img/features/feature-04.jpg' data-fancybox='gallery'><img src='assets/img/features/feature-04.jpg' alt='Feature'></a></li></ul></div><div class='clinic-services'><span>Dental Fillings</span><span> Whitneing</span></div></div></div><div class='doc-info-right'><div class='clini-infos'><ul><li><i class='far fa-thumbs-up'></i> 98%</li><li><i class='far fa-comment'></i> 17 Feedback</li><li><i class='fas fa-map-marker-alt'></i> New Delhi, Delhi</li><li><i class='far fa-money-bill-alt'></i> $300 - $1000 <i class='fas fa-info-circle' data-toggle='tooltip' title='Lorem Ipsum'></i> </li></ul></div><div class='clinic-booking'><a class='view-pro-btn' href='doctor-profile.html'>View Profile</a><a class='apt-btn' href='booking.html'>Book Appointment</a></div></div></div></div></div>"
+
+			}
+			form.html(html);
+
+			});
+		}
+
+		function geocodeLatLng(input) {
+			const geocoder = new google.maps.Geocoder();
+            const infowindow = new google.maps.InfoWindow();
+            console.log(input);
+			const latlngStr = input.split(",", 2);
+			const latlng = {
+				lat: parseFloat(latlngStr[0]),
+				lng: parseFloat(latlngStr[1]),
+			};
+			geocoder.geocode({ location: latlng }, (results, status) => {
+				if (status === "OK") {
+				if (results[0]) {
+	
+					var address =infowindow.setContent(results[0].formatted_address);
+						console.log(address);
+				} else {
+					window.alert("No results found");
+				}
+				} else {
+				window.alert("Geocoder failed due to: " + status);
+				}
+          });
+		}
+		</script>
 		
 	</body>
 </html>
