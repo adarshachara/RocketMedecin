@@ -200,7 +200,7 @@
 									<li class="breadcrumb-item active" aria-current="page">Search</li>
 								</ol>
 							</nav>
-							<h2 class="breadcrumb-title">2245 matches found for : Dentist In Bangalore</h2>
+							<h2 class="breadcrumb-title" id="count_result">2245 matches found for : Dentist In Bangalore</h2>
 						</div>
 						<div class="col-md-4 col-12 d-md-block d-none">
 							<div class="sort-by">
@@ -910,6 +910,8 @@
 			drs = data["SRCHTBL"]
 			var html ="";
 			length = drs.length
+			var count_result= $("#count_result")
+			count_result.text( length +" \t" + "matches found")
 			if (length ==0){
 				html+="<p> No search result found, Please reset filters and try again </p>"
 			}
