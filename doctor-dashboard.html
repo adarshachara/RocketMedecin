@@ -17,14 +17,17 @@
 		
 		<!-- Main CSS -->
 		<link rel="stylesheet" href="assets/css/style.css">
-		
-		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!--[if lt IE 9]>
-			<script src="assets/js/html5shiv.min.js"></script>
-			<script src="assets/js/respond.min.js"></script>
-		<![endif]-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<!-- Circle Progress JS -->
+		<script src="assets/js/circle-progress.min.js"></script>
 
 		<script>
+
+
+ 
+
+	
+
 			setTimeout(()=>{
 				console.log("ALL", document.querySelector('.multisteps-form__form'));
 			}, 100);
@@ -36,8 +39,7 @@
 				authToken= " bearer " +localStorage.getItem("tokenid");
 				user_ID=localStorage.getItem("docid");
 				// alert(authToken);
-				
-
+			
              /*   Logic for Get  
 			var data = {}, tmp;
 			var url = document.location.href;
@@ -142,8 +144,57 @@
 				
 			});
 
+			var patientcountdata = {
+			
+ 			"url": "http://52.142.57.152/rocketmed/api/Doctor?usrid=4&dt=2020-08-25",
+ 			"method": "GET",
+			 "timeout": 0,
+			};
+			$.ajax(patientcountdata).done(function (responsecountpat) {
+			 console.log("Countgraph"+responsecountpat);
+			
+			 var graphdata = $.parseJSON(responsecountpat);
+			 console.log(graphdata.TotPatCount4Dt[0].TotPatCount4Dt+"Graphdata obtained");
+			 $('#test_daisy').html( "<div id='chart' class='circle-graph1' data-percent='90' >"+
+					"<img src='assets/img/icon-01.png' class='img-fluid' alt='patient'/>"+
+			"</div>");
+			
+			
+			 $('#datapercent_span').append(graphdata.TotPatCount4Dt[0].TotPatCount4Dt);
+
+
+
+
+			 var datapercent3_value_get = (JSON.stringify(graphdata.TotPatCount[0].TotPatCount ));
+			 $('#insert_value_circle3').append(datapercent3_value_get);
+			 var stationary = 100;
+			 var datapercent3_value= ((datapercent3_value_get/stationary));
+			 $('#datapercent3').circleProgress({
+					value:datapercent3_value,
+			});
+
+
+			 var datapercent1_value_get = (JSON.stringify(graphdata.TotPatCount[0].TotPatCount ));
+			 $('#insert_value_circle1').append(datapercent1_value_get);
+			 var stationary = 100;
+			 var datapercent1_value= ((datapercent1_value_get/stationary));
+			 $('#datapercent1').circleProgress({
+					value:datapercent1_value,
+			});
+
+			
+			 var datapercent2_value_get = (JSON.stringify( graphdata.TotPatCount4Dt[0].TotPatCount4Dt ));
+			 $('#insert_value_circle2').append( datapercent2_value_get);
+			 var stationary = 100;
+			 var datapercent2_value= ((datapercent2_value_get/  stationary));
+			 $('#datapercent2').circleProgress({
+					value: datapercent2_value,
+				});
+			});
+
+	
 			$.ajax({
-				url: "http://www.rocketmedecin.com/rocketmed/api/Appointments?usrtype=doc&userid=4",
+				url: "http://localhost/rocketmed/api/Appointments?usrtype=doc&userid=4",
 				method:"GET",
 				async: false,
 				contentType: 'application/json; charset=utf-8',
@@ -161,6 +212,9 @@
 					   
 						console.log("Appointments:"+response);
 						// alert("Appointments:"+JSON.stringify(response));
+
+
+
 					
 
 					
@@ -226,61 +280,6 @@
 					}
 			});
 			//localStorage.setItem("doc_name", data.DoctorDtls[0].Firstname);
-			loadProfilepic(docIDGlobal); 
-
-			function loadProfilepic(userId) {
-                var settings = {
-                    "url": "http://www.rocketmedecin.com/rocketmed/api/UpFiles?usertype=doc&userid="+userId,
-                    "method": "GET",
-					"timeout": 0,
-                    "headers": {
-                        "Authorization": authToken
-                    }
-                };
-                $.ajax(settings).done(function (response) {
-					
-					var data = $.parseJSON(response);
-				
-                    console.log(data);
-					var prof_data=[];
-					length = data.DocFileList.length
-					for(i=0;i<length;i++) {
-						if(data.DocFileList[i]["DocType"] == 1){
-							prof_data.push(data.DocFileList[i]);
-						}
-
-					}
-                    var last = prof_data[prof_data.length - 1]
-					console.log(last);
-					var PatientDocumentId = last.DoctorDocumentId;
-					console.log(PatientDocumentId);
-					var source = last.DocPath;
-					console.log(source);
-					updateProfilepic(PatientDocumentId);
-
-				}); 
-				}
-
-				function updateProfilepic(docid) {
-					console.log("updating image");
-                    var settings = {
-						"url": "http://www.rocketmedecin.com/rocketmed/api/UpFiles/" + docid + "?usertype=doc",
-                        "method": "GET",
-						"timeout": 0,
-                        "headers": {
-                            "Authorization": authToken
-                        }
-                    };
-					$.ajax(settings).done(function (response) {
-						console.log(response);
-                        $("#profilepic").attr("src", "data: image / jpeg; base64," + response);
-                        $("#user-img").attr("src", "data: image / jpeg; base64," + response);
-						$("#avtar_img").attr("src", "data: image / jpeg; base64," + response);
-
-                    }); 
-                }
-
-
 			}
 			
 // 			window.Dropzone.options.myDropzone= {
@@ -311,52 +310,6 @@
 //         });
 //     }
 // }
-					 /******Slider Functionality*****/
-			 var circle_represent2='<div class="col-md-12 col-lg-4">'+
-													'<div class="dash-widget dct-border-rht">'+
-														'<div class="circle-bar circle-bar1">'+
-															'<div class="circle-graph1" data-percent="0">'+
-																'<img src="assets/img/icon-01.png" class="img-fluid" alt="patient">'+
-															'</div>'+
-														'</div>'+
-														'<div class="dash-widget-info">'+
-															'<h6>Total Patient</h6>'+
-															'<h3>1500</h3>'+
-															'<p class="text-muted">Till Today</p>'+
-														'</div>'+
-													'</div>'+
-												'</div>'+
-												'<div class="col-md-12 col-lg-4">'+
-													'<div class="dash-widget dct-border-rht">'+
-														'<div class="circle-bar circle-bar2" >'+
-																'<div class="circle-graph2" data-percent="25">'+
-																	'<img src="assets/img/icon-02.png" class="img-fluid" alt="Patient">'+
-															'</div>'+
-														'</div>'+
-														'<div class="dash-widget-info">'+
-															'<h6>Today Patient</h6>'+
-															'<h3>160</h3>'+
-															'<p class="text-muted">06, Nov 2019</p>'+
-														'</div>'+
-													'</div>'+
-												'</div>'+
-												'<div class="col-md-12 col-lg-4">'+
-													'<div class="dash-widget">'+
-														'<div class="circle-bar circle-bar3">'+
-															'<div class="circle-graph3" data-percent="50">'+
-																'<img src="assets/img/icon-03.png" class="img-fluid" alt="Patient">'+
-															'</div>'+
-														'</div>'+
-														'<div class="dash-widget-info">'+
-															'<h6>Appoinments</h6>'+
-															'<h3>85</h3>'+
-															'<p class="text-muted">06, Apr 2019</p>'+
-														'</div>'+
-													'</div>'+
-												'</div>'+
-											'</div>';
-														
-				$('#r2').append(circle_represent2);
 			}
 			setTimeout(()=>{
 				console.log("ALL", document.querySelector('.multisteps-form__form'));
@@ -568,20 +521,20 @@
 							</div>
 							<div class="header-contact-detail">
 								<p class="contact-header">Contact</p>
-								<p class="contact-info-header"> +91 9886720987</p>
+								<p class="contact-info-header"> +1 (732) 258-5168</p>
 							</div>
 						</li>
 						<!-- User Menu -->
 						<li class="nav-item dropdown has-arrow logged-item">
 							<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 								<span class="user-img">
-									<img id ="user-img" class="rounded-circle" src="assets/img/doctors/doctor-thumb-02.jpg" width="31" alt="Darren Elder">
+									<img class="rounded-circle" src="assets/img/doctors/doctor-thumb-02.jpg" width="31" alt="Darren Elder">
 								</span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
 								<div class="user-header">
 									<div class="avatar avatar-sm">
-										<img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image"  id ="avtar_img" class="avatar-img rounded-circle">
+										<img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image" class="avatar-img rounded-circle">
 									</div>
 									<div class="user-text">
 										<h6>Darren Elder</h6>
@@ -629,7 +582,7 @@
 								<div class="widget-profile pro-widget-content">
 									<div class="profile-info-widget">
 										<a href="#" class="booking-doc-img">
-											<img  id="profilepic" src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
+											<img src="assets/img/doctors/doctor-thumb-02.jpg" alt="User Image">
 										</a>
 										<div class="profile-det-info">
 											<h3>&nbsp; <span id="firstname1" > </span> </h3>
@@ -732,7 +685,61 @@
 						
 						<div class="col-md-7 col-lg-8 col-xl-9">
 
-							
+							<div class="row">
+								<div class="col-md-12">
+									<div class="card dash-card">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-md-12 col-lg-4">
+													<div class="dash-widget dct-border-rht">
+														<div class="circle-bar circle-bar1" >
+															<!-- <span id="data"></span> -->
+														<div  class="circle-graph1" id="datapercent1" >
+																<img src="assets/img/icon-01.png" class="img-fluid" alt="patient">
+															</div> 
+														</div>
+														<div class="dash-widget-info">
+															<h6>Total Patient</h6>
+															<h3><span id="insert_value_circle1"></span></h3>
+															<p class="text-muted">Till Today</p>
+														</div>
+													</div>
+												</div>
+												
+												<div class="col-md-12 col-lg-4">
+													<div class="dash-widget dct-border-rht">
+														<div class="circle-bar circle-bar2">
+															<div class="circle-graph2" id="datapercent2">
+																<img src="assets/img/icon-02.png" class="img-fluid" alt="Patient">
+															</div>
+														</div>
+														<div class="dash-widget-info">
+															<h6>Today Patient</h6>
+															<h3><span id="insert_value_circle2"></span></h3>
+															<p class="text-muted">06, Nov 2019</p>
+														</div>
+													</div>
+												</div>
+												
+												<div class="col-md-12 col-lg-4">
+													<div class="dash-widget">
+														<div class="circle-bar circle-bar3">
+															<div class="circle-graph3" id="datapercent3">
+																<img src="assets/img/icon-03.png" class="img-fluid" alt="Patient">
+															</div>
+														</div>
+														<div class="dash-widget-info">
+															<h6>Appoinments</h6>
+															<h3><span id="insert_value_circle3"></span></h3>
+															<p class="text-muted">06, Apr 2019</p>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 							
 							<div class="row">
 								<div class="col-md-12">
@@ -742,21 +749,21 @@
 										<!-- Appointment Tab -->
 										<ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
 											<li class="nav-item">
-												<a class="nav-link" href="#past-booking" data-toggle="tab">Past booking</a>
+												<a class="nav-link" href="#upcoming-appointments" data-toggle="tab">Past booking</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link active" href="#today-appointments" data-toggle="tab">Today</a>
+												<a class="nav-link active" href="#upcoming-appointments" data-toggle="tab">Upcoming</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="#upcoming-appointments" data-toggle="tab">Upcoming</a>
-											</li>
+												<a class="nav-link" href="#today-appointments" data-toggle="tab">Today</a>
+											</li> 
 										</ul>
 										<!-- /Appointment Tab -->
 										
 										<div class="tab-content">
 										
 											<!-- Upcoming Appointment Tab -->
-											<div class="tab-pane" id="upcoming-appointments">
+											<div class="tab-pane show active" id="upcoming-appointments">
 												<div class="card card-table mb-0">
 													<div class="card-body">
 														<div class="table-responsive">
@@ -785,7 +792,7 @@
 											<!-- /Upcoming Appointment Tab -->
 									   
 											<!-- Today Appointment Tab -->
-											<div class="tab-pane show active" id="today-appointments">
+											<div class="tab-pane" id="today-appointments">
 												<div class="card card-table mb-0">
 													<div class="card-body">
 														<div class="table-responsive">
@@ -1065,11 +1072,11 @@
 										</div>
 										<p>
 											<i class="fas fa-phone-alt"></i>
-											+91 9886720987
+											+1 (732) 258-5168
 										</p>
 										<p class="mb-0">
 											<i class="fas fa-envelope"></i>
-											<a class="text-primary" href="mailto:info@rocketmedecin.com" target="_blank">info@rocketmedecin.com</a>
+											info@rocketmedecin.com
 										</p>
 									</div>
 								</div>
@@ -1091,7 +1098,7 @@
 							<div class="row">
 								<div class="col-md-6 col-lg-6">
 									<div class="copyright-text">
-										<p class="mb-0">&copy; 2020 Rocket Medecin. All rights reserved. | Powered by <a href="https://pixtontechnologies.com/" title="Pixton Technologies" target="_blank">Pixton Technologies</a> &amp; <a href="https://medianurture.com/" title="Media Nurture LLP" target="_blank">Media Nurture LLP</a></p>
+										<p class="mb-0">&copy; 2020 Rocket Medecin. All rights reserved. | Powered by Pixton Technologies</p>
 									</div>
 								</div>
 								<div class="col-md-6 col-lg-6">
@@ -1121,7 +1128,7 @@
 		<!-- /Main Wrapper -->
 	  
 		<!-- jQuery -->
-		<script src="assets/js/jquery.min.js"></script>
+	
 		
 		<!-- Bootstrap Core JS -->
 		<script src="assets/js/popper.min.js"></script>
@@ -1131,8 +1138,7 @@
         <script src="assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
         <script src="assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
 		
-		<!-- Circle Progress JS -->
-		<script src="assets/js/circle-progress.min.js"></script>
+	
 		
 		<!-- Custom JS -->
 		<script src="assets/js/script.js"></script>
